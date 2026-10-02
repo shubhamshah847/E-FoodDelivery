@@ -20,6 +20,8 @@ import OwnerDashBoard from "./components/ownerDashBoard";
 import { getUserData } from "./hooks/getUser";
 import getUserLocation from "./hooks/getUserLocation";
 import { getShop } from "./hooks/getShop";
+import Cart from "./pages/cart";
+import CheckOut from "./pages/checkOut";
 
 export const serverURI = "http://localhost:3000";
 
@@ -86,15 +88,12 @@ function App() {
                 element={<VerifyOtp />}
             />
 
-            {/* Owner Dashboard */}
+           
             <Route
-                path="/owner/dashboard"
-                element={
-                    userData
-                        ? <OwnerDashBoard />
-                        : <Navigate to="/login/user"  />
-                }
+              path='/cart'
+              element={userData? <Cart/> : <Navigate to='/login/user'/>}
             />
+            <Route path="/item/checkout" element={userData? <CheckOut/> : <Navigate to='/login/user'/>}/>
 
         </Routes>
     );
