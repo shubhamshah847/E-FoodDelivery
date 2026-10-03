@@ -40,12 +40,12 @@ export const addItem = async (req, res) => {
         }
 
         const image = await cloudinaryUpload(req.file.path);
-
+        
         // Create item
         const item = await itemModel.create({
             name,
             image,
-            shop: req.user,
+            shop,
             category,
             price: Number(price),
             discount: Number(discount) || 0,

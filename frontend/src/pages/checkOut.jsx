@@ -25,6 +25,7 @@ import {
   setAddress,
   setLocation,
 } from "../redux/mapSlice";
+import { serverURI } from "../App";
 
 
 function ReCenterMap({ location }) {
@@ -79,17 +80,24 @@ function ReCenterMap({ location }) {
 
 function CheckOut() {
 
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const cart = useSelector((state) => state.user.cart);
+  const [loading, setLoading] = useState(false);
+  const [showMessage,setShowMessage]=useState(false)
+  const [showError,setShowError]= useState(false)
+  const { shopData } = useSelector(state => state.user);
+
+
+  const {cart} = useSelector((state) => state.user);
 
   const totalAmount = cart.reduce(
     (total, item) =>
       total + Number(item.price) * (item.quantity || 1),
     0
   );
-  const delivery = totalAmount>1000 ? 50 : 10
+  const delivery = totalAmount > 1000 ? 50 : 10
 
   // Discount calculation from environment variable
   const discountPercent = Number(import.meta.env.VITE_DISCOUNT_PERCENT) || 0;
@@ -100,11 +108,9 @@ function CheckOut() {
   const { location, address } = useSelector(
     (state) => state.map
   );
-
+  
   const [paymentMethod, setPaymentMethod] =
     useState("cod");
-
-
   const handleDragEnd = (e) => {
 
     const marker = e.target;
@@ -120,8 +126,6 @@ function CheckOut() {
       })
     );
   };
-
-
   const handleCurrentLocation = () => {
 
     if (!navigator.geolocation) {
@@ -173,6 +177,63 @@ function CheckOut() {
     );
   }
 
+ const handleOrder = async () => {
+  if (!cart || cart.length === 0) {
+    console.log("Cart is empty");
+    return;
+  }
+
+  try {
+    setLoading(true);
+
+    const shopOrder = [];
+
+    for (const item of cart) {
+
+      // Find whether this shop already exists
+      let existingShop = shopOrder.find(
+        shopData => shopData.shop === item.shop
+      );
+      
+      // If shop doesn't exist, create it
+      if (!existingShop) {
+        existingShop = {
+          shop: item.shop,
+          items: []
+        };
+
+        shopOrder.push(existingShop);
+      }
+      existingShop.items.push({
+        item: item._id,
+        quantity: item.quantity
+      });
+    }
+
+ const orderPlace = await axios.post(
+  serverURI + "/user/order",
+  {
+    payment: paymentMethod,
+    deliveryAddress: address,
+    shopOrder: shopOrder
+  },
+  {
+    withCredentials: true
+  }
+);
+setShowError(false)
+ setShowMessage(true)
+ console.log(orderPlace.data)
+
+  } catch (err) {
+    console.log("ORDER ERROR:", err);
+    setShowError(true)
+
+  } finally {
+    setShowMessage(false)
+    setLoading(false);
+  }
+};
 
 
   return (
@@ -402,86 +463,120 @@ function CheckOut() {
 
           {/* ================= ORDER SUMMARY ================= */}
 
-           <div className="h-fit rounded-2xl bg-white p-6 shadow-sm">
+          <div className="h-fit rounded-2xl bg-white p-6 shadow-sm">
 
-                <h2 className="mb-6 text-xl font-bold text-gray-800">
-                    Order Summary
-                </h2>
+            <h2 className="mb-6 text-xl font-bold text-gray-800">
+              Order Summary
+            </h2>
 
-                {/* Cart Items List */}
-                <div className="mb-6 max-h-48 overflow-y-auto space-y-3 pr-2">
-                  {cart.map((item, index) => (
-                    <div key={item.id || index} className="flex justify-between items-center text-sm">
-                      <div className="flex items-center gap-2">
-                        <span className="text-gray-700 font-medium">{item.name}</span>
-                        <span className="text-gray-400">x{item.quantity || 1}</span>
-                      </div>
-                      <span className="text-gray-600 font-medium">
-                        ₹{Number(item.price) * (item.quantity || 1)}
-                      </span>
-                    </div>
-                  ))}
+            {/* Cart Items List */}
+            <div className="mb-6 max-h-48 overflow-y-auto space-y-3 pr-2">
+              {cart.map((item, index) => (
+                <div key={item.id || index} className="flex justify-between items-center text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-700 font-medium">{item.name}</span>
+                    <span className="text-gray-400">x{item.quantity || 1}</span>
+                  </div>
+                  <span className="text-gray-600 font-medium">
+                    ₹{Number(item.price) * (item.quantity || 1)}
+                  </span>
                 </div>
+              ))}
+            </div>
 
-                <div className="border-t pt-4 space-y-4">
+            <div className="border-t pt-4 space-y-4">
 
-                    <div className="flex justify-between text-gray-600">
-                        <span>Subtotal</span>
-                        <span>₹{totalAmount}</span>
-                    </div>
+              <div className="flex justify-between text-gray-600">
+                <span>Subtotal</span>
+                <span>₹{totalAmount}</span>
+              </div>
 
 
-                    <div className="flex justify-between text-gray-600">
-                        <span>Delivery Fee</span>
-                        <span>{delivery}</span>
-                    </div>
+              <div className="flex justify-between text-gray-600">
+                <span>Delivery Fee</span>
+                <span>{delivery}</span>
+              </div>
 
+              {discountPercent > 0 && (
+                <div className="flex justify-between text-green-600 font-medium">
+                  <span>Discount ({discountPercent}% OFF)</span>
+                  <span>-₹{discountAmount.toFixed(2)}</span>
+                </div>
+              )}
+
+
+              <div className="border-t pt-4">
+
+                <div className="flex justify-between text-lg font-bold text-gray-800">
+                  <span>Total</span>
+
+                  <div className="flex items-center gap-2">
                     {discountPercent > 0 && (
-                        <div className="flex justify-between text-green-600 font-medium">
-                            <span>Discount ({discountPercent}% OFF)</span>
-                            <span>-₹{discountAmount.toFixed(2)}</span>
-                        </div>
+                      <span className="text-sm font-normal text-gray-400 line-through">
+                        ₹{grossTotal}
+                      </span>
                     )}
-
-
-                    <div className="border-t pt-4">
-
-                        <div className="flex justify-between text-lg font-bold text-gray-800">
-                            <span>Total</span>
-
-                            <div className="flex items-center gap-2">
-                                {discountPercent > 0 && (
-                                    <span className="text-sm font-normal text-gray-400 line-through">
-                                        ₹{grossTotal}
-                                    </span>
-                                )}
-                                <span>
-                                    ₹{finalTotal.toFixed(2)}
-                                </span>
-                            </div>
-                        </div>
-
-                    </div>
-
+                    <span>
+                      ₹{finalTotal.toFixed(2)}
+                    </span>
+                  </div>
                 </div>
+
+              </div>
 
             </div>
 
+          </div>
 
+{showError && (
+  <div className="mb-5 flex items-center gap-4 rounded-2xl border border-red-200 bg-red-50 p-5">
+    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-red-500 text-2xl font-bold text-white">
+      !
+    </div>
+
+    <div>
+      <h2 className="font-bold text-red-700">
+        Order failed!!
+      </h2>
+
+      <p className="mt-1 text-sm text-red-600">
+        Try again
+      </p>
+    </div>
+  </div>
+)}
           {/* ================= PLACE ORDER ================= */}
-
+       
           <button
-            onClick={() => {
-              console.log("Payment:", paymentMethod);
-              console.log("Address:", address);
-              console.log("Location:", location);
-            }}
+            onClick={handleOrder}
+            disabled={loading}
             className="mt-6 flex h-14 w-full items-center justify-center rounded-xl bg-red-500 text-lg font-bold text-white shadow-md transition hover:bg-red-600 hover:shadow-lg active:scale-[0.98]"
           >
-            {paymentMethod === "cod"
-              ? `Place Order • ₹${finalTotal.toFixed(2)}`
-              : `Pay ₹${finalTotal.toFixed(2)} & Place Order`}
+            {loading
+              ? "Creating..."
+              : paymentMethod === "cod"
+                ? `Place Order • ₹${finalTotal.toFixed(2)}`
+                : `Pay ₹${finalTotal.toFixed(2)} & Place Order`}
           </button>
+          {showMessage && (
+  <div className="mb-6 flex items-center gap-4 rounded-2xl border border-green-200 bg-green-50 p-5 shadow-sm">
+    
+    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-green-500 text-2xl text-white">
+      ✓
+    </div>
+
+    <div>
+      <h2 className="text-lg font-bold text-green-700">
+        Order placed successfully!
+      </h2>
+
+      <p className="mt-1 text-sm text-green-600">
+        Your order has been confirmed and will be prepared soon.
+      </p>
+    </div>
+
+  </div>
+)}
 
         </div>
 
@@ -490,6 +585,6 @@ function CheckOut() {
     </div>
   );
 
-}
+ }
 
 export default CheckOut;

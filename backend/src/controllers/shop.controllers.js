@@ -50,6 +50,7 @@ export const getMyShop = async (req, res) => {
         if (!user.isOwner) return res.status(403).json({ message: "you are not a shop owner ! " })
         const shop = await shopModel.findOne({ owner: userId })
     console.log("shop",shop)
+    
          res.status(200).json({message:"succcessfullly fetched ", shop})
     }
         catch (err) {
@@ -60,4 +61,5 @@ export const getMyShop = async (req, res) => {
             })
         }
 }
+
 

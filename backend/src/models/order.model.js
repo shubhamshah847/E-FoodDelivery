@@ -1,22 +1,23 @@
-import mongoose from mongoose;
+import mongoose from "mongoose"
 
 const shopOrderItem = new mongoose.Schema({
 
     items: {
-        type: mongoose.Schema.type.objectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "item"
     },
-    price:Number,
-    quantity:Number
+    price: Number,
+    quantity: Number,
+    subTotal: Number
 }, { timestamps: true })
 
 const shopOrderSchema = new mongoose.Schema({
     shop: {
-        shop: mongoose.Schema.Types.objectId,
+         type:mongoose.Schema.Types.ObjectId,
         ref: "shop"
     },
     owner: {
-        shop: mongoose.Schema.Types.objectId,
+         type:mongoose.Schema.Types.ObjectId,
         ref: "user"
     },
     shopOrderItem: [shopOrderItem],
@@ -24,7 +25,7 @@ const shopOrderSchema = new mongoose.Schema({
 }, { timestamps: true })
 const orderSchema = new mongoose.Schema({
     user: {
-        type: mongoose.Schema.type.objectId,
+        type:mongoose.Schema.Types.ObjectId,
         ref: "user"
     },
     paymentMethod: {
@@ -32,11 +33,9 @@ const orderSchema = new mongoose.Schema({
         enum: ["cod", "online"],
         required: true
     },
-    deliveryAddress: {
-        text: String,
-        latitude: Number,
-        longitude: Number
-
+    deliveryAddress:{
+        type:String,
+        required:true
     },
     totalAmount: {
         type: Number
@@ -44,6 +43,6 @@ const orderSchema = new mongoose.Schema({
     shopOrder: [shopOrderSchema]
 
 }, { timestamps: true })
-const userModel = mongoose.model("order", userSchema)
+const orderModel = mongoose.model("order",orderSchema)
 
-export default userModel ;
+export default orderModel;

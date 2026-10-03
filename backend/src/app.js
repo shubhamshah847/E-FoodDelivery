@@ -8,6 +8,7 @@ import authRoutes from '../src/routes/auth.routes.js'
 import shopRoutes from '../src/routes/shop.routes.js'
 import itemRoutes from '../src/routes/item.routes.js'
 import cookieParser from 'cookie-parser'
+import orderRoutes from '../src/routes/order.routes.js'
 
 const app = express()
 connectToDb()
@@ -20,6 +21,7 @@ app.use(cookieParser())
 app.use(express.json())
 app.use('/auth',authRoutes)
 app.use('/api',shopRoutes)
+app.use('/user',orderRoutes)
 app.use('/api',itemRoutes)
 
 

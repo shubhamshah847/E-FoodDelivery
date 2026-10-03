@@ -66,6 +66,11 @@ const itemSchema = new mongoose.Schema({
         type: String,
         enum: ["veg", "non-veg"],
         required: true
+    },
+    quantity:{
+        type:Number,
+        required:true,
+        min:0,default:0
     }
 })
 
