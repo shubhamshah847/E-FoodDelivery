@@ -9,6 +9,7 @@ import shopRoutes from '../src/routes/shop.routes.js'
 import itemRoutes from '../src/routes/item.routes.js'
 import cookieParser from 'cookie-parser'
 import orderRoutes from '../src/routes/order.routes.js'
+import paymentRoutes from '../payment/razroPay/payment.routes.js'
 
 const app = express()
 connectToDb()
@@ -23,8 +24,6 @@ app.use('/auth',authRoutes)
 app.use('/api',shopRoutes)
 app.use('/user',orderRoutes)
 app.use('/api',itemRoutes)
-
-
-
+app.use('/payment', paymentRoutes)
 
 export default app ;

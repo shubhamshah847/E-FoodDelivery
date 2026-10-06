@@ -76,7 +76,7 @@ console.log(item)
                 // Check stock
                 console.log(quantity)
                 console.log(item.quantity)
-                if (quantity >=item.quantity) {
+                if (quantity > item.quantity) {
                     return res.status(400).json({
                         message: `Only ${item.quantity} ${item.name} items are available`
                     });

@@ -27,6 +27,8 @@ import {
 } from "../redux/mapSlice";
 import { serverURI } from "../App";
 import OrderSucess from "../components/orderSuccessfully";
+import Payment from "../components/payment/Payment";
+import { setCart } from "../redux/userSlice";
 
 
 function ReCenterMap({ location }) {
@@ -180,6 +182,56 @@ function CheckOut() {
     );
   }
 
+ const createOrderRequest = async (selectedPaymentMethod) => {
+  if (!cart || cart.length === 0) {
+    console.log("Cart is empty");
+    return;
+  }
+
+  const shopOrder = [];
+
+  for (const item of cart) {
+    let existingShop = shopOrder.find(
+      shopData => shopData.shop === item.shop
+    );
+
+    if (!existingShop) {
+      existingShop = {
+        shop: item.shop,
+        items: []
+      };
+
+      shopOrder.push(existingShop);
+    }
+
+    existingShop.items.push({
+      item: item._id,
+      quantity: item.quantity
+    });
+  }
+
+  const finalAddress = (address || "").trim() || "Delivery location not provided";
+
+  const orderPlace = await axios.post(
+    serverURI + "/user/order",
+    {
+      payment: selectedPaymentMethod,
+      deliveryAddress: finalAddress,
+      shopOrder: shopOrder
+    },
+    {
+      withCredentials: true
+    }
+  );
+
+  const createdOrder = orderPlace.data.order;
+  dispatch(setCart([]));
+  setOrder(createdOrder);
+  setShowError(false);
+  setShowMessage(true);
+  return createdOrder;
+};
+
  const handleOrder = async () => {
   if (!cart || cart.length === 0) {
     console.log("Cart is empty");
@@ -189,53 +241,15 @@ function CheckOut() {
   try {
     setLoading(true);
 
-    const shopOrder = [];
-
-    for (const item of cart) {
-
-      // Find whether this shop already exists
-      let existingShop = shopOrder.find(
-        shopData => shopData.shop === item.shop
-      );
-      
-      // If shop doesn't exist, create it
-      if (!existingShop) {
-        existingShop = {
-          shop: item.shop,
-          items: []
-        };
-
-        shopOrder.push(existingShop);
-      }
-      existingShop.items.push({
-        item: item._id,
-        quantity: item.quantity
-      });
+    if (paymentMethod === "online") {
+      setshowPayment(true);
+      return;
     }
 
- const orderPlace = await axios.post(
-  serverURI + "/user/order",
-  {
-    payment: paymentMethod,
-    deliveryAddress: address,
-    shopOrder: shopOrder
-  },
-  {
-    withCredentials: true
-  }
-);
-console.log("order data:",orderPlace)
-const order = orderPlace.data.order
-setOrder(orderPlace.data.order)//"hi",
-console.log("hi",orderPlace.data.order)
-setShowError(false)
- setShowMessage(true)
- if(paymentMethod=="cod") {
-  setshowOrderSuccess(true)
-  return
- }
- setPaymentMethod(true)
- console.log("hello",orderPlace.data.order)
+    const createdOrder = await createOrderRequest(paymentMethod);
+    if (createdOrder) {
+      setshowOrderSuccess(true);
+    }
 
   } catch (err) {
     console.log("ORDER ERROR:", err);
@@ -246,13 +260,44 @@ setShowError(false)
     setLoading(false);
   }
 };
+
+ const handleOnlinePaymentSuccess = async () => {
+  try {
+    const createdOrder = await createOrderRequest("online");
+    if (createdOrder) {
+      setshowOrderSuccess(true);
+    }
+  } catch (err) {
+    console.log("ONLINE PAYMENT ORDER ERROR:", err);
+    setShowError(true)
+  } finally {
+    setLoading(false);
+    setShowMessage(false);
+  }
+};
 if (showOrderSuccess && order) {
-  return <OrderSucess order={order} 
-  onClose={()=>setshowOrderSuccess(false)}
-  />;
+  return (
+    <OrderSucess
+      order={order}
+      onClose={() => {
+        setshowOrderSuccess(false);
+      }}
+    />
+  );
 }
 if (showPayment) {
-  return <Payment order={order} />;
+  const paymentSummary = {
+    subtotal: totalAmount,
+    deliveryFee: delivery,
+    taxes: Math.max(0, finalTotal - totalAmount - delivery),
+    totalAmount: finalTotal
+  };
+
+  return <Payment 
+    onClose={()=>setshowPayment(false)}
+    onPaymentSuccess={handleOnlinePaymentSuccess}
+    checkoutSummary={paymentSummary}
+  />
 }
 
 
@@ -556,7 +601,7 @@ if (showPayment) {
 
     <div>
       <h2 className="font-bold text-red-700">
-       {orderPlace.message} Order failed!!
+       Order failed!!
       </h2>
 
       <p className="mt-1 text-sm text-red-600">
@@ -568,7 +613,9 @@ if (showPayment) {
           {/* ================= PLACE ORDER ================= */}
        
           <button
-            onClick={handleOrder}
+            onClick={handleOrder
+                     
+            }
             disabled={loading}
             className="mt-6 flex h-14 w-full items-center justify-center rounded-xl bg-red-500 text-lg font-bold text-white shadow-md transition hover:bg-red-600 hover:shadow-lg active:scale-[0.98]"
           >

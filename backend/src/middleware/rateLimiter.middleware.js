@@ -9,7 +9,7 @@ const rateLimiter = async (req, res, next) => {
             await redis.expire(key, 60);
         }
 
-        if (requests > 10) {
+        if (requests > 5) {
             return res.status(429).json({
                 message:"Too many requests. Try again later."
             });
@@ -19,7 +19,7 @@ const rateLimiter = async (req, res, next) => {
 
     } catch (error) {
         console.log(error);
-        next();
+       
     }
 };
 

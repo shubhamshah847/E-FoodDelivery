@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { X, Clock, MapPin, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function OrderSucess({ order, onClose }) {
-    console.log(order)
+    const navigate=useNavigate()
     const orders = {
         id: order.orderId,
         eta: "25 - 35 mins",
@@ -32,7 +33,7 @@ export default function OrderSucess({ order, onClose }) {
 
                     {/* Top Right 'X' Close Button */}
                     <button
-                        onClick={onClose}
+                        onClick={()=>{navigate('/home')}}
                         className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 active:scale-90 flex items-center justify-center text-slate-500 hover:text-slate-800 transition-all duration-200"
                         aria-label="Close"
                     >

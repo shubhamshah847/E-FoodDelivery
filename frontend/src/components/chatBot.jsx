@@ -31,7 +31,7 @@ function YumzoChatbot() {
     {
       id: 1,
       sender: 'ai',
-      text: "Hi! 👋 How can I help you today?",
+      text: "Hi! 👋 Welcome to Yumzo. How can I help with your order today?",
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
