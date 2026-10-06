@@ -40,7 +40,7 @@ const Login = () => {
     } catch (err) {
       console.log("login api err :", err);
       setMessage(
-        err.response?.data?.message || "Login failed. Please try again."
+       err ||err.response?.data?.message || "Login failed. Please try again."
       );
     } finally {
       setLoginloading(false);

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { FaMoneyBillWave } from "react-icons/fa";
+
 import {
   IoSearch,
   IoLocationOutline,
 } from "react-icons/io5";
 
 import { useNavigate } from "react-router-dom";
-
 import {
   MapContainer,
   TileLayer,
@@ -26,6 +26,7 @@ import {
   setLocation,
 } from "../redux/mapSlice";
 import { serverURI } from "../App";
+import OrderSucess from "../components/orderSuccessfully";
 
 
 function ReCenterMap({ location }) {
@@ -87,9 +88,11 @@ function CheckOut() {
   const [loading, setLoading] = useState(false);
   const [showMessage,setShowMessage]=useState(false)
   const [showError,setShowError]= useState(false)
+  const [order , setOrder] = useState(null)
+  const [showPayment, setshowPayment] = useState(false)
+  const [showOrderSuccess,setshowOrderSuccess] = useState(false)
   const { shopData } = useSelector(state => state.user);
-
-
+  const [closeOrderSuccess,setCloseOrderSuccess] = useState(false)
   const {cart} = useSelector((state) => state.user);
 
   const totalAmount = cart.reduce(
@@ -221,9 +224,18 @@ function CheckOut() {
     withCredentials: true
   }
 );
+console.log("order data:",orderPlace)
+const order = orderPlace.data.order
+setOrder(orderPlace.data.order)//"hi",
+console.log("hi",orderPlace.data.order)
 setShowError(false)
  setShowMessage(true)
- console.log(orderPlace.data)
+ if(paymentMethod=="cod") {
+  setshowOrderSuccess(true)
+  return
+ }
+ setPaymentMethod(true)
+ console.log("hello",orderPlace.data.order)
 
   } catch (err) {
     console.log("ORDER ERROR:", err);
@@ -234,6 +246,14 @@ setShowError(false)
     setLoading(false);
   }
 };
+if (showOrderSuccess && order) {
+  return <OrderSucess order={order} 
+  onClose={()=>setshowOrderSuccess(false)}
+  />;
+}
+if (showPayment) {
+  return <Payment order={order} />;
+}
 
 
   return (
@@ -536,7 +556,7 @@ setShowError(false)
 
     <div>
       <h2 className="font-bold text-red-700">
-        Order failed!!
+       {orderPlace.message} Order failed!!
       </h2>
 
       <p className="mt-1 text-sm text-red-600">
@@ -563,16 +583,6 @@ setShowError(false)
     
     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-green-500 text-2xl text-white">
       ✓
-    </div>
-
-    <div>
-      <h2 className="text-lg font-bold text-green-700">
-        Order placed successfully!
-      </h2>
-
-      <p className="mt-1 text-sm text-green-600">
-        Your order has been confirmed and will be prepared soon.
-      </p>
     </div>
 
   </div>

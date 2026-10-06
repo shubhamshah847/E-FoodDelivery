@@ -91,20 +91,19 @@ export const editItem = async(req,res)=>{
 }
 export const getItem = async(req,res)=>{
     const id = req.user
+    console.log("items",id)
     if(!id){
         return res.staus(401).json({
             message:"You are not authenticated"
         })
     }
     try{
-    // const shop = await shopModel.findOne({owner:id})
-    //    if (!shop) {
-    //         return res.status(404).json({
-    //             message: "Shop not found"
-    //         });
-    //     }
-
-    const items = await itemModel.find({shop:id})
+    const shop = await shopModel.find({owner:id})
+    console.log("shop",shop)
+    const shopId = shop[0]._id
+    console.log("shopid",shopId)
+    
+    const items = await itemModel.find({shop:shopId})
     console.log("items",items)
     if(!items) return res.status(404).json({message:"items not found"})
     
@@ -120,8 +119,7 @@ export const getAllItem = async(req,res)=>{
 
     try{
     const items = await itemModel.find()
-    
-    console.log("items:",items)
+
     if(!items) return res.status(404).json({message:"items not found"})
     
    res.status(200).json({messsage:"items fetched succesfully",items})

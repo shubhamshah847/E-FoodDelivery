@@ -23,7 +23,8 @@ const userSchema = new mongoose.Schema({
     },
     isOwner:{
         type:Boolean,
-        default:false
+        default:false,
+        required:true
     }
 })
 

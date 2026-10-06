@@ -20,7 +20,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { setuserData, setShopData } from "../redux/userSlice";
 import { serverURI } from "../App";
 import FoodItems from "./FoodItems";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import GetMyOrders from "./getUserOrders";
+import GetOwnerOrder from "./getOnwnerOrders";
 
 function Nav() {
 
@@ -30,7 +32,7 @@ function Nav() {
   );
   const navigate = useNavigate()
   const dispatch = useDispatch();
-   const {cart} = useSelector(state=>state.user)
+  const { cart } = useSelector(state => state.user)
 
   // ================= USER =================
 
@@ -79,6 +81,7 @@ function Nav() {
   const [itemFoodType, setItemFoodType] = useState("");
   const [itemImage, setItemImage] = useState(null);
   const [itemDiscount, setitemDiscount] = useState("")
+  const [itemQuantity, setItemQuantity] = useState(null)
 
   const [dragging, setDragging] = useState(false);
   const [itemLoading, setItemLoading] = useState(false);
@@ -93,16 +96,13 @@ function Nav() {
   // ================= LOGOUT =================
 
   const handleLogout = async () => {
-
     try {
-
       await axios.get(
         serverURI + "/auth/logout",
         {
           withCredentials: true,
         }
       );
-
       dispatch(setuserData(null));
 
       setProfileOpen(false);
@@ -136,9 +136,7 @@ function Nav() {
 
     handleImage(file);
   };
-
   // ================= CREATE SHOP =================
-
   const handleCreateShop = async (e) => {
 
     e.preventDefault();
@@ -368,6 +366,7 @@ function Nav() {
       setItemsLoading(false);
     }
   };
+
   return (
     <>
 
@@ -697,7 +696,18 @@ function Nav() {
                           placeholder="Enter discount"
                           className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 pr-10 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
                         />
+                        <div> <label>Quantity</label>
+                          <div className="relative">
 
+                            <input
+                              type="text"
+                              value={itemQuantity}
+                              onChange={(e) => setItemQuantity(e.target.value)}
+                              placeholder="Quantity"
+                              className="w-full rounded-xl border border-gray-200 px-4 py- outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+                            />
+                          </div>
+                        </div>
                         <span className="absolute right-4 top-1/2 -translate-y-1/2 font-medium text-gray-500">
                           %
                         </span>
@@ -775,8 +785,8 @@ function Nav() {
                         type="button"
                         onClick={() => setItemFoodType("veg")}
                         className={`rounded-xl border px-4 py-3 font-semibold transition ${itemFoodType === "veg"
-                            ? "border-green-500 bg-green-50 text-green-600"
-                            : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                          ? "border-green-500 bg-green-50 text-green-600"
+                          : "border-gray-200 text-gray-600 hover:bg-gray-50"
                           }`}
                       >
                         🟢 Veg
@@ -788,8 +798,8 @@ function Nav() {
                         type="button"
                         onClick={() => setItemFoodType("non-veg")}
                         className={`rounded-xl border px-4 py-3 font-semibold transition ${itemFoodType === "non-veg"
-                            ? "border-red-500 bg-red-50 text-red-600"
-                            : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                          ? "border-red-500 bg-red-50 text-red-600"
+                          : "border-gray-200 text-gray-600 hover:bg-gray-50"
                           }`}
                       >
                         🔴 Non-Veg
@@ -815,8 +825,8 @@ function Nav() {
                       onDragLeave={() => setDragging(false)}
                       onDrop={handleDrop}
                       className={`cursor-pointer rounded-2xl border-2 border-dashed p-8 text-center transition ${dragging
-                          ? "border-orange-500 bg-orange-50"
-                          : "border-gray-300 bg-gray-50 hover:border-orange-300"
+                        ? "border-orange-500 bg-orange-50"
+                        : "border-gray-300 bg-gray-50 hover:border-orange-300"
                         }`}
                     >
 
@@ -1078,8 +1088,8 @@ function Nav() {
                         type="button"
                         onClick={() => setItemFoodType("veg")}
                         className={`rounded-xl border px-4 py-3 font-semibold transition ${itemFoodType === "veg"
-                            ? "border-green-500 bg-green-50 text-green-600"
-                            : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                          ? "border-green-500 bg-green-50 text-green-600"
+                          : "border-gray-200 text-gray-600 hover:bg-gray-50"
                           }`}
                       >
                         🟢 Veg
@@ -1091,8 +1101,8 @@ function Nav() {
                         type="button"
                         onClick={() => setItemFoodType("non-veg")}
                         className={`rounded-xl border px-4 py-3 font-semibold transition ${itemFoodType === "non-veg"
-                            ? "border-red-500 bg-red-50 text-red-600"
-                            : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                          ? "border-red-500 bg-red-50 text-red-600"
+                          : "border-gray-200 text-gray-600 hover:bg-gray-50"
                           }`}
                       >
                         🔴 Non-Veg
@@ -1118,8 +1128,8 @@ function Nav() {
                       onDragLeave={() => setDragging(false)}
                       onDrop={handleDrop}
                       className={`cursor-pointer rounded-2xl border-2 border-dashed p-8 text-center transition ${dragging
-                          ? "border-orange-500 bg-orange-50"
-                          : "border-gray-300 bg-gray-50 hover:border-orange-300"
+                        ? "border-orange-500 bg-orange-50"
+                        : "border-gray-300 bg-gray-50 hover:border-orange-300"
                         }`}
                     >
 
@@ -1194,7 +1204,7 @@ function Nav() {
                     {/* Cancel */}
                     <button
                       type="button"
-                      onClick={() => setEditingItem(false)} 
+                      onClick={() => setEditingItem(false)}
                       className="rounded-xl border border-gray-200 px-6 py-3 font-semibold text-gray-600 transition hover:bg-gray-50"
                     >
                       Cancel
@@ -1297,12 +1307,12 @@ function Nav() {
 
               {/* CART */}
 
-              <button onClick={()=>{navigate('/cart')}} className="relative p-2 hover:bg-gray-100 rounded-lg">
+              <button onClick={() => { navigate('/cart') }} className="relative p-2 hover:bg-gray-100 rounded-lg">
 
                 <FiShoppingCart size={21} />
 
                 <span className="absolute -top-1 -right-1 w-5 h-5 bg-orange-500 text-white text-xs rounded-full flex items-center justify-center">
-                 {cart.length}
+                  {cart.length}
                 </span>
 
               </button>
@@ -1310,7 +1320,9 @@ function Nav() {
 
               {/* ORDERS */}
 
-              <button className="hidden md:flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-lg">
+              <button onClick={() => {
+                navigate('/get-my-orders')
+              }} className="hidden md:flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-lg">
 
                 <FiPackage size={18} />
 
@@ -1340,11 +1352,11 @@ function Nav() {
                 </span>
 
               </button>
-
-
               {/* ORDERS */}
 
-              <button className="hidden md:flex items-center gap-2 px-3 py-2 hover:bg-orange-50 rounded-lg">
+              <button onClick={() => {
+                navigate('/get-owner-orders')
+              }} className="hidden md:flex items-center gap-2 px-3 py-2 hover:bg-orange-50 rounded-lg">
 
                 <FiPackage size={18} />
 
@@ -1471,14 +1483,13 @@ function Nav() {
 
                   <>
 
-                    <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50">
-
-                      <FiPackage size={18} />
-
+                    <button
+                      onClick={() => navigate("/get-my-orders")}
+                      className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50"
+                    >
+                      <FiPackage size={20} />
                       My Orders
-
                     </button>
-
 
                     <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50">
 

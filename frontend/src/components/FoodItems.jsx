@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { serverURI } from "../App";
-import {setAddToCart} from '../redux/userSlice.js'
+import { setAddToCart } from '../redux/userSlice.js'
 import { FiPlus, FiMinus } from "react-icons/fi";
 
 // ================= FOOD CARD =================
@@ -52,19 +52,17 @@ function FoodCard({ item }) {
           <div className="flex items-center gap-1">
 
             <span
-              className={`h-2 w-2 rounded-full ${
-                item.foodType === "veg"
+              className={`h-2 w-2 rounded-full ${item.foodType === "veg"
                   ? "bg-green-600"
                   : "bg-red-600"
-              }`}
+                }`}
             ></span>
 
             <span
-              className={`text-[9px] font-bold ${
-                item.foodType === "veg"
+              className={`text-[9px] font-bold ${item.foodType === "veg"
                   ? "text-green-700"
                   : "text-red-700"
-              }`}
+                }`}
             >
               {item.foodType === "veg" ? "VEG" : "NON-VEG"}
             </span>
@@ -74,77 +72,67 @@ function FoodCard({ item }) {
       </div>
 
       {/* DETAILS */}
-      <div className="px-1 pb-1 pt-3">
+     <div className="px-1 pb-1 pt-3">
+  {/* NAME & QUANTITY INFO */}
+  <h3 className="truncate text-sm font-semibold text-gray-900 sm:text-base">
+    {item.name}
+  </h3>
+  <span className="text-xs text-gray-500">Qty: {item.quantity}</span>
 
-        {/* NAME */}
-        <h3 className="truncate text-sm font-semibold text-gray-900 sm:text-base">
-          {item.name}
-        </h3>
+  {/* PRICE SECTION */}
+  <div className="mt-2 flex items-center gap-2">
+    <span className="text-base font-bold text-gray-900 sm:text-lg">
+      ₹{finalPrice}
+    </span>
 
-        {/* PRICE */}
-        <div className="mt-2 flex items-center gap-2">
+    {item.discount > 0 && (
+      <span className="text-[11px] font-medium text-gray-400 line-through">
+        ₹{item.price}
+      </span>
+    )}
+  </div>
 
-          <span className="text-base font-bold text-gray-900 sm:text-lg">
-            ₹{finalPrice}
-          </span>
+  <p className="mt-0.5 text-[9px] text-gray-400">
+    Inclusive of all taxes
+  </p>
 
-          {item.discount > 0 && (
-            <span className="text-[11px] font-medium text-gray-400 line-through">
-              ₹{item.price}
-            </span>
-          )}
+  {/* CART BUTTON / CONTROLS */}
+  <div className="mt-3 flex justify-end">
+    {quantity === 0 ? (
+      /* ADD BUTTON */
+      <button
+        type="button"
+        onClick={() => dispatch(setAddToCart(item))}
+        className="flex h-9 w-9 items-center justify-center rounded-full bg-orange-500 text-white shadow-sm transition hover:scale-105 hover:bg-orange-600 active:scale-90"
+      >
+        <FiPlus size={20} />
+      </button>
+    ) : (
+      /* QUANTITY CONTROLS */
+      <div className="flex items-center gap-2 rounded-full border border-orange-500 bg-white px-1 py-1 shadow-sm">
+        <button
+          type="button"
+          onClick={decreaseQuantity}
+          className="flex h-7 w-7 items-center justify-center rounded-full bg-orange-100 text-orange-600 transition hover:bg-orange-200 active:scale-90"
+        >
+          <FiMinus size={15} />
+        </button>
 
-        </div>
+        <span className="min-w-[24px] text-center text-sm font-bold text-gray-800">
+          {quantity}
+        </span>
 
-        <p className="mt-0.5 text-[9px] text-gray-400">
-          Inclusive of all taxes
-        </p>
-
-        {/* CART BUTTON */}
-        <div className="mt-3 flex justify-end">
-
-          {quantity === 0 ? (
-
-            /* ADD BUTTON */
-            <button
-              type="button"
-              onClick={()=>dispatch(setAddToCart(item))}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-orange-500 text-white shadow-sm transition hover:scale-105 hover:bg-orange-600 active:scale-90"
-            >
-              <FiPlus size={20} />
-            </button>
-
-          ) : (
-
-            /* QUANTITY CONTROLS */
-            <div className="flex items-center gap-2 rounded-full border border-orange-500 bg-white px-1 py-1">
-             <p> Add to Cart  </p>
-              <button
-                type="button"
-                onClick={decreaseQuantity}
-                className="flex h-7 w-7 items-center justify-center rounded-full bg-orange-100 text-orange-600 transition hover:bg-orange-200 active:scale-90"
-              >
-                <FiMinus size={15} />
-              </button>
-
-              <span className="min-w-[20px] text-center text-sm font-bold text-gray-800">
-                {quantity}
-              </span>
-
-              <button
-                type="button"
-             //   onClick={increaseQuantity}
-                className="flex h-7 w-7 items-center justify-center rounded-full bg-orange-500 text-white transition hover:bg-orange-600 active:scale-90"
-              >
-                <FiPlus size={15} />
-              </button>
-
-            </div>
-          )}
-
-        </div>
-
+        <button
+          type="button"
+          // onClick={increaseQuantity}
+          className="flex h-7 w-7 items-center justify-center rounded-full bg-orange-500 text-white transition hover:bg-orange-600 active:scale-90"
+        >
+          <FiPlus size={15} />
+        </button>
       </div>
+    )}
+  </div>
+</div>
     </div>
   );
 }
@@ -265,11 +253,10 @@ function CategoryRow({ categoryName, items }) {
           {/* ALL */}
           <button
             onClick={() => setActiveFilter("all")}
-            className={`rounded-lg px-3 py-1 text-xs font-semibold transition-all ${
-              activeFilter === "all"
+            className={`rounded-lg px-3 py-1 text-xs font-semibold transition-all ${activeFilter === "all"
                 ? "bg-white text-gray-900 shadow-sm"
                 : "text-gray-500 hover:text-gray-900"
-            }`}
+              }`}
           >
             All ({items.length})
           </button>
@@ -278,11 +265,10 @@ function CategoryRow({ categoryName, items }) {
           {/* VEG */}
           <button
             onClick={() => setActiveFilter("veg")}
-            className={`flex items-center gap-1 rounded-lg px-3 py-1 text-xs font-semibold transition-all ${
-              activeFilter === "veg"
+            className={`flex items-center gap-1 rounded-lg px-3 py-1 text-xs font-semibold transition-all ${activeFilter === "veg"
                 ? "bg-white text-green-700 shadow-sm"
                 : "text-gray-500 hover:text-green-700"
-            }`}
+              }`}
           >
             <span className="h-2 w-2 rounded-full bg-green-600"></span>
             Veg
@@ -292,11 +278,10 @@ function CategoryRow({ categoryName, items }) {
           {/* NON VEG */}
           <button
             onClick={() => setActiveFilter("non-veg")}
-            className={`flex items-center gap-1 rounded-lg px-3 py-1 text-xs font-semibold transition-all ${
-              activeFilter === "non-veg"
+            className={`flex items-center gap-1 rounded-lg px-3 py-1 text-xs font-semibold transition-all ${activeFilter === "non-veg"
                 ? "bg-white text-red-700 shadow-sm"
                 : "text-gray-500 hover:text-red-700"
-            }`}
+              }`}
           >
             <span className="h-2 w-2 rounded-full bg-red-600"></span>
             Non-Veg
@@ -314,11 +299,10 @@ function CategoryRow({ categoryName, items }) {
         <button
           onClick={() => handleScroll("left")}
           aria-label="Scroll Left"
-          className={`absolute -left-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-800 shadow-md transition-all duration-300 hover:scale-110 hover:shadow-lg active:scale-95 ${
-            canScrollLeft
+          className={`absolute -left-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-800 shadow-md transition-all duration-300 hover:scale-110 hover:shadow-lg active:scale-95 ${canScrollLeft
               ? "opacity-100 visible"
               : "opacity-0 invisible pointer-events-none"
-          }`}
+            }`}
         >
           <svg
             className="h-5 w-5"
@@ -357,11 +341,10 @@ function CategoryRow({ categoryName, items }) {
         <button
           onClick={() => handleScroll("right")}
           aria-label="Scroll Right"
-          className={`absolute -right-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-800 shadow-md transition-all duration-300 hover:scale-110 hover:shadow-lg active:scale-95 ${
-            canScrollRight
+          className={`absolute -right-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-800 shadow-md transition-all duration-300 hover:scale-110 hover:shadow-lg active:scale-95 ${canScrollRight
               ? "opacity-100 visible"
               : "opacity-0 invisible pointer-events-none"
-          }`}
+            }`}
         >
           <svg
             className="h-5 w-5"
@@ -405,13 +388,26 @@ function FoodItems() {
           withCredentials: true,
         }
       );
+      const fetchedItems = response.data.items || [];
 
-      const fetchedItems =
-        response.data.items || [];
+      console.log("f", fetchedItems);
+
+      const shuffle = [...fetchedItems];
+
+      for (let i = shuffle.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+
+        console.log("i:", i, "j:", j);
+
+        [shuffle[i], shuffle[j]] =
+          [shuffle[j], shuffle[i]];
+      }
+
+      console.log("s", shuffle);
 
 
       // GROUP BY CATEGORY
-      const grouped = fetchedItems.reduce(
+      const grouped = shuffle.reduce(
         (acc, item) => {
 
           const cat =

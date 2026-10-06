@@ -8,10 +8,6 @@ const shopSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    // shop:{
-    //     type:mongoose.Schema.Types.ObjectId,
-    //     ref:'shop'
-    // },
     owner:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"user",

@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-
+import axios from 'axios'
+import { serverURI } from '../App';
+import { useSelector } from 'react-redux';
 // Icons
 const SparklesIcon = ({ className = "w-5 h-5" }) => (
   <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -23,6 +25,8 @@ function YumzoChatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const {userData} = useSelector(state=>state.user)
+ 
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -44,23 +48,6 @@ function YumzoChatbot() {
     }
   }, [messages, isOpen, isLoading]);
 
-  // Fake API Call function - Replace this with your actual API endpoint
-  const fetchBotResponse = async (userQuery) => {
-    /* 
-    // REAL API CALL EXAMPLE:
-    const response = await fetch('https://your-api-endpoint.com/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: userQuery })
-    });
-    const data = await response.json();
-    return data.reply;
-    */
-
-    // Simulated API response delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    return "Hi, Hello! How can I assist you with your food order?";
-  };
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -77,17 +64,21 @@ function YumzoChatbot() {
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 
+
     setMessages((prev) => [...prev, userMsg]);
     setIsLoading(true);
-
+   
     try {
-      // Call fake/real API
-      const botReplyText = await fetchBotResponse(userText);
-
+      let message = userMsg.text
+      
+      const botReplyText = await axios.post(serverURI+'/api/chat', {
+         message
+      })
+      const fromAIMsg = botReplyText.data.answer
       const aiMsg = {
         id: Date.now() + 1,
         sender: 'ai',
-        text: botReplyText,
+        text: fromAIMsg,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
 
@@ -115,7 +106,7 @@ function YumzoChatbot() {
       {/* Chat Window Container */}
       {isOpen && (
         <div className="fixed z-50 bottom-5 right-5 w-[360px] h-[520px] max-h-[85vh] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden">
-          
+
           {/* Header */}
           <div className="bg-gradient-to-r from-orange-500 to-red-500 px-4 py-3 text-white flex items-center justify-between shrink-0">
             <div className="flex items-center gap-2">
@@ -123,6 +114,7 @@ function YumzoChatbot() {
                 <SparklesIcon className="w-4 h-4 text-white" />
               </div>
               <h2 className="font-bold text-sm">Yumzo AI</h2>
+            
             </div>
             <button
               onClick={() => setIsOpen(false)}
@@ -135,6 +127,7 @@ function YumzoChatbot() {
 
           {/* Messages Area */}
           <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50">
+          <div> <h1 className="text-2xl font-bold"> Hi, {userData?.user?.name || "there"} 👋 </h1> </div>
             {messages.map((msg) => {
               const isAI = msg.sender === 'ai';
               return (
@@ -150,11 +143,10 @@ function YumzoChatbot() {
 
                   <div className={`max-w-[80%]`}>
                     <div
-                      className={`p-3 rounded-2xl text-xs leading-relaxed ${
-                        isAI
+                      className={`p-3 rounded-2xl text-xs leading-relaxed ${isAI
                           ? 'bg-white text-slate-800 border border-slate-200 rounded-tl-xs'
                           : 'bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-tr-xs'
-                      }`}
+                        }`}
                     >
                       <p className="whitespace-pre-wrap break-words">{msg.text}</p>
                     </div>
@@ -196,11 +188,10 @@ function YumzoChatbot() {
               <button
                 type="submit"
                 disabled={!inputValue.trim() || isLoading}
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-white transition ${
-                  inputValue.trim() && !isLoading
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-white transition ${inputValue.trim() && !isLoading
                     ? 'bg-gradient-to-r from-orange-500 to-red-500 hover:scale-105 active:scale-95'
                     : 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                }`}
+                  }`}
                 aria-label="Send message"
               >
                 <SendIcon />

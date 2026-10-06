@@ -13,19 +13,25 @@ const shopOrderItem = new mongoose.Schema({
 
 const shopOrderSchema = new mongoose.Schema({
     shop: {
-         type:mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "shop"
     },
     owner: {
-         type:mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "user"
     },
     shopOrderItem: [shopOrderItem],
     subTotal: Number,
 }, { timestamps: true })
 const orderSchema = new mongoose.Schema({
+    orderId: {
+        type: String,
+        unique: true,
+        required: true
+    },
+
     user: {
-        type:mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "user"
     },
     paymentMethod: {
@@ -33,16 +39,28 @@ const orderSchema = new mongoose.Schema({
         enum: ["cod", "online"],
         required: true
     },
-    deliveryAddress:{
-        type:String,
-        required:true
+    deliveryAddress: {
+        type: String,
+        required: true
     },
     totalAmount: {
         type: Number
     },
+    status: {
+        type: String,
+        enum: [
+            "pending",
+            "confirmed",
+            "preparing",
+            "out_for_delivery",
+            "delivered",
+            "cancelled"
+        ],
+        default: "pending"
+    },
     shopOrder: [shopOrderSchema]
 
 }, { timestamps: true })
-const orderModel = mongoose.model("order",orderSchema)
+const orderModel = mongoose.model("order", orderSchema)
 
 export default orderModel;

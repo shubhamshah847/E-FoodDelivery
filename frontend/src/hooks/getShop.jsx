@@ -17,7 +17,7 @@ export async function getShop(dispatch) {
 
     } catch (error) {
         console.log(
-            "getShopData:",
+            "getShopDataerr:",
             error.response?.data || error.message
         );
 

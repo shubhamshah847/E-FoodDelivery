@@ -30,7 +30,7 @@ export const shopController = async (req, res) => {
         } else {
             shop = await shopModel.findByIdAndUpdate(req.user, {
                 name, city, state, address, image, owner: req.user
-            }, { new: true }) - sele
+            }, { new: true })
         }
         await shop.populate("owner")
         return res.status(201).json(shop)
@@ -49,8 +49,6 @@ export const getMyShop = async (req, res) => {
         const user = await userModel.findOne({ _id: userId })
         if (!user.isOwner) return res.status(403).json({ message: "you are not a shop owner ! " })
         const shop = await shopModel.findOne({ owner: userId })
-    console.log("shop",shop)
-    
          res.status(200).json({message:"succcessfullly fetched ", shop})
     }
         catch (err) {
