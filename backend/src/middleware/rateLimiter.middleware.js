@@ -4,7 +4,7 @@ const rateLimiter = async (req, res, next) => {
     try {
         const key = `rate:${req.id}`
         const requests = await redis.incr(key)
-        console.log(requests)
+        
         if (requests === 1) {
             await redis.expire(key, 60);
         }

@@ -20,6 +20,10 @@ const shopOrderSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "user"
     },
+   payment: {
+      type:Boolean,
+      default:false
+    },
     shopOrderItem: [shopOrderItem],
     subTotal: Number,
 }, { timestamps: true })
@@ -39,6 +43,7 @@ const orderSchema = new mongoose.Schema({
         enum: ["cod", "online"],
         required: true
     },
+
     deliveryAddress: {
         type: String,
         required: true
