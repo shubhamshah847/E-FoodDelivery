@@ -242,7 +242,11 @@ function CheckOut() {
     setLoading(true);
 
     if (paymentMethod === "online") {
-      setshowPayment(true);
+      const createdOrder = await createOrderRequest(paymentMethod);
+      if (createdOrder) {
+        setshowPayment(true);
+        return createdOrder.orderId;
+      }
       return;
     }
 
@@ -260,13 +264,17 @@ function CheckOut() {
     setLoading(false);
   }
 };
-
- const handleOnlinePaymentSuccess = async () => {
+ const handleOnlinePaymentSuccess = async (paymentResult) => {
   try {
-    const createdOrder = await createOrderRequest("online");
-    if (createdOrder) {
-      setshowOrderSuccess(true);
-    }
+    const orderId = paymentResult?.orderId || paymentResult;
+    const response = await axios.patch(
+      `${serverURI}/user/order/${encodeURIComponent(orderId)}/payment-success`,
+      {},
+      { withCredentials: true }
+    );
+    setOrder(response.data.order);
+    setshowPayment(false);
+    setshowOrderSuccess(true);
   } catch (err) {
     console.log("ONLINE PAYMENT ORDER ERROR:", err);
     setShowError(true)
@@ -295,6 +303,7 @@ if (showPayment) {
 
   return <Payment 
     onClose={()=>setshowPayment(false)}
+    existingOrderId={order?.orderId}
     onPaymentSuccess={handleOnlinePaymentSuccess}
     checkoutSummary={paymentSummary}
   />
@@ -613,9 +622,7 @@ if (showPayment) {
           {/* ================= PLACE ORDER ================= */}
        
           <button
-            onClick={handleOrder
-                     
-            }
+            onClick={handleOrder }
             disabled={loading}
             className="mt-6 flex h-14 w-full items-center justify-center rounded-xl bg-red-500 text-lg font-bold text-white shadow-md transition hover:bg-red-600 hover:shadow-lg active:scale-[0.98]"
           >
