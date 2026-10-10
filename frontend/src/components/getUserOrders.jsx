@@ -25,9 +25,8 @@ const GetMyOrders = () => {
             setSelectedOrder((currentOrder) => currentOrder
                 ? fetchedOrders.find((order) => order.orderId === currentOrder.orderId) || currentOrder
                 : null);
-            console.log("userOrders", result.data)
         } catch (error) {
-            console.log(error);
+            console.error("Could not load user orders:", error);
         } finally {
             setLoading(false);
         }

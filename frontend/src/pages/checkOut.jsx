@@ -66,7 +66,7 @@ function ReCenterMap({ location }) {
         dispatch(setAddress(city));
 
       } catch (err) {
-        console.log(
+        console.error(
           "Unable to get location:",
           err.message
         );
@@ -158,7 +158,7 @@ function CheckOut() {
       },
 
       (error) => {
-        console.log(error);
+        console.error("Could not get current location:", error);
 
         alert(
           "Unable to get your current location. Please allow location access."
@@ -184,7 +184,6 @@ function CheckOut() {
 
  const createOrderRequest = async (selectedPaymentMethod) => {
   if (!cart || cart.length === 0) {
-    console.log("Cart is empty");
     return;
   }
 
@@ -234,7 +233,6 @@ function CheckOut() {
 
  const handleOrder = async () => {
   if (!cart || cart.length === 0) {
-    console.log("Cart is empty");
     return;
   }
 
@@ -256,7 +254,7 @@ function CheckOut() {
     }
 
   } catch (err) {
-    console.log("ORDER ERROR:", err);
+    console.error("Order creation failed:", err);
     setShowError(true)
 
   } finally {
@@ -276,7 +274,7 @@ function CheckOut() {
     setshowPayment(false);
     setshowOrderSuccess(true);
   } catch (err) {
-    console.log("ONLINE PAYMENT ORDER ERROR:", err);
+    console.error("Online payment order update failed:", err);
     setShowError(true)
   } finally {
     setLoading(false);

@@ -51,7 +51,7 @@ export const registerController = async (req, res) => {
         try {
             redis.set(`otp:${user._id}`, otp, "EX", 300)
         } catch (err) {
-            console.log("redis set error :", err)
+            console.error("Redis OTP write failed:", err)
         }
 
         //    const userOtp =  await otpModel.create({
@@ -67,7 +67,8 @@ export const registerController = async (req, res) => {
             await sendOtp(user.email, user.name, otp) // email send
         } catch (error) {
             res.status(500).json({message:"otp cant send . try agian"})
-          return  console.log(error)
+          console.error("OTP email send failed:", error)
+          return
         }
 
 
@@ -79,7 +80,7 @@ export const registerController = async (req, res) => {
     }
     catch (err) {
         await session.abortTransaction();
-        console.log(err)
+        console.error("User registration failed:", err)
         res.status(500).json({
             message: "user not created"
         })
@@ -111,7 +112,6 @@ export const loginController = async (req, res) => {
 
     //     if (isValidPassword) {
 
-console.log("esexist:-",isExist)
             const token = jwt.sign({
                 id: isExist._id
             }, process.env.JWT_WEB_TOKEN, {
@@ -133,7 +133,6 @@ console.log("esexist:-",isExist)
     //     })
     // }
     // catch (err) {
-    //     console.log(err)
     //     res.status(500).json({
     //         message: "not logged something went wrong"
     //     })
@@ -158,7 +157,7 @@ export const otpVerify = async (req, res) => {
             })
         }
         } catch (error) {
-            console.log("redis get error :", error)
+            console.error("Redis OTP lookup failed:", error)
         }
 
         const ttl = await redis.ttl(`otp:${_id}`);
@@ -183,7 +182,7 @@ export const otpVerify = async (req, res) => {
         }
         catch (err) {
             await redis.del(`otp:{_id}`)
-            console.log("send regrestation email failed:-", err)
+            console.error("Registration email failed:", err)
             return res.status(500).json({
                 message: "send regrestation email failed"
             })
@@ -192,7 +191,7 @@ export const otpVerify = async (req, res) => {
 
     }
     catch (err) {
-        console.log(err)
+        console.error("OTP verification failed:", err)
         res.status(500).json({
             message: "something went worng while verifying otp "
         })
@@ -217,7 +216,6 @@ export const otpNewGenerate = async (req, res) => {
 
         const user = await userModel.findById(_id)
         try {
-            console.log("otp sended")
             await sendOtp(user.email, user.name, otp) 
         }
         catch (err) {
@@ -230,7 +228,7 @@ export const otpNewGenerate = async (req, res) => {
         })
     }
     catch (err) {
-        console.log(" while creating a new otp:-", err)
+        console.error("OTP generation failed:", err)
         res.status(500).json({
             message: "some thing went wrong while creating a new otp"
         })
@@ -294,7 +292,7 @@ export const registerGoogleController = async (req, res) => {
     }
     catch (err) {
         // await session.abortTransaction();
-        console.log(err)
+        console.error("Google registration failed:", err)
         res.status(500).json({
             message: "user not created"
         })
@@ -304,7 +302,6 @@ export const registerGoogleController = async (req, res) => {
 }
 export const getCurrentUser = async (req, res) => {
     const id = req.user
-    console.log("id:", id)
     if (!id) return res.status(401).json({ message: "id not found" })
     try {
         const user = await userModel.findById(id).select("-password")

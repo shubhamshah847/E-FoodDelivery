@@ -88,6 +88,12 @@ function Nav() {
   const [items, setItems] = useState([]);
   const [itemsLoading, setItemsLoading] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
+
+  const [query, setQuery] = useState("")
+  const [suggestion, setSuggestion] = useState([])
+  const [searchResults, setSearchResults] = useState([]);
+  const [showSearchResult,setShowSearchResults]=useState(false)
+
   useEffect(() => {
     if (isOwner && shopData) {
       getMyItems();
@@ -109,7 +115,7 @@ function Nav() {
 
     } catch (error) {
 
-      console.log(
+      console.error(
         "Logout error:",
         error
       );
@@ -136,31 +142,51 @@ function Nav() {
 
     handleImage(file);
   };
+  const handleSearch = async (e) => {
+    const value = e.target.value;
+    setQuery(value);
+    setShowSearchResults(false);
+    setSearchResults([]);
+
+    if (!value.trim()) {
+      setSuggestion([]);
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `${serverURI}/api/search?query=${encodeURIComponent(value.trim())}`,
+        { withCredentials: true }
+      );
+      setSuggestion(Array.isArray(response.data) ? response.data : []);
+    } catch (error) {
+      console.error("Food search failed:", error);
+      setSuggestion([]);
+    }
+  }
+  const handleSuggestionClick = async (selectedItem) => {
+    if (!selectedItem?.name) return;
+
+    setQuery(selectedItem.name);
+    setShowSearchResults(true);
+    setSuggestion([]);
+
+    try {
+      const response = await axios.get(
+        `${serverURI}/api/search?query=${encodeURIComponent(selectedItem.name)}`,
+        { withCredentials: true }
+      );
+      setSearchResults(Array.isArray(response.data) ? response.data : []);
+    } catch (error) {
+      console.error("Selected food search failed:", error);
+      setSearchResults([selectedItem]);
+    }
+  }
+
   // ================= CREATE SHOP =================
   const handleCreateShop = async (e) => {
 
     e.preventDefault();
-
-    console.log("Create shop clicked");
-
-    console.log("Shop Name:", shop);
-    console.log("Image:", file);
-    console.log("City:", citya);
-    console.log("State:", state);
-    console.log("Address:", address);
-
-    /*
-        Your create-shop API logic can be added here.
-
-        The form values are:
-
-        shop     -> shop
-        image    -> file
-        city     -> citya
-        state    -> state
-        address  -> address
-        owner    -> user._id
-    */
 
     if (!shop || !file || !citya || !state || !address) {
 
@@ -207,18 +233,16 @@ function Nav() {
           }
         }
       );
-      console.log(response)
       try {
         dispatch(setShopData(response?.data))
       } catch (err) {
-        console.log("err dispactch :", err)
+        console.error("Shop data dispatch failed:", err)
       }
 
       setshowCreateShop(false);
-      console.log(response.data);
 
     } catch (error) {
-      console.log(
+      console.error(
         "Create shop error: ",
         error
       );
@@ -270,8 +294,6 @@ function Nav() {
         }
       );
 
-      console.log("Item created:", response.data);
-
       // clear form
       setItemName("");
       setItemPrice("");
@@ -283,7 +305,7 @@ function Nav() {
 
     } catch (error) {
 
-      console.log("Add item error:", error);
+      console.error("Add item failed:", error);
 
       alert(
         error.response?.data?.message ||
@@ -320,8 +342,6 @@ function Nav() {
         }
       );
 
-      console.log("Item created:", response.data);
-
       // clear form
       setItemName("");
       setItemPrice("");
@@ -333,7 +353,7 @@ function Nav() {
 
     } catch (error) {
 
-      console.log("Add item error:", error);
+      console.error("Item update failed:", error);
       setEditingItem(false)
       alert(
         error.response?.data?.message ||
@@ -355,12 +375,10 @@ function Nav() {
         }
       );
 
-      console.log("ITEM RESPONSE:", response.data);
-
       setItems(response.data.items || []);
 
     } catch (error) {
-      console.log("GET ITEMS ERROR:", error);
+      console.error("Could not load owner items:", error);
       setItems([]);
     } finally {
       setItemsLoading(false);
@@ -1258,23 +1276,37 @@ function Nav() {
 
         {!isOwner && (
 
-          <div className="hidden md:flex flex-1 max-w-xl mx-8">
-
+          <div className="hidden md:flex flex-1 max-w-xl mx-8 relative">
+            {/* Search Input Bar */}
             <div className="w-full flex items-center bg-gray-100 rounded-xl px-4 py-2.5">
-
-              <FiSearch
-                size={20}
-                className="text-gray-500"
-              />
-
+              <FiSearch size={20} className="text-gray-500" />
               <input
                 type="text"
+                value={query}
+                onChange={handleSearch}
                 placeholder="Search food or restaurants..."
                 className="w-full bg-transparent outline-none px-3"
               />
-
             </div>
 
+            {/* Auto-complete Dropdown Menu */}
+            {suggestion.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-50 max-h-60 overflow-y-auto">
+                {suggestion.map((item) => (
+                  <div onClick={() => {
+                    handleSuggestionClick(item)
+                  }}
+                    key={item._id}
+                    className="flex justify-between items-center px-4 py-3 hover:bg-gray-50 cursor-pointer border-b last:border-none border-gray-100"
+                  >
+                    <p className="font-medium text-gray-800">{item.name}</p>
+                    <span className="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded-full">
+                      {item.category}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
         )}
@@ -1843,34 +1875,53 @@ function Nav() {
 
             <div className="mt-8">
 
-              <h2 className="text-xl font-bold mb-4">
-                Categories
-              </h2>
-
-
-              <div className="space-y-6">
-                <div className="space-x-2 flex gap-3 overflow-x-auto">
-                  {[
-                    "Pizza",
-                    "Burger",
-                    "Biryani",
-                    "Chinese",
-                    "South Indian",
-                    "Desserts",
-                  ].map((category) => (
+              {showSearchResult ? (
+                <>
+                  <div className="mb-4 flex items-center justify-between gap-4">
+                    <h2 className="text-xl font-bold">
+                      Search results for “{query}”
+                    </h2>
                     <button
-                      key={category}
-                      className="bg-white border px-5 py-3 rounded-xl whitespace-nowrap hover:border-orange-500 hover:text-orange-500"
+                      type="button"
+                      onClick={() => {
+                        setShowSearchResults(false);
+                        setSearchResults([]);
+                        setQuery("");
+                      }}
+                      className="shrink-0 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:border-orange-500 hover:text-orange-500"
                     >
-                      {category}
+                      Clear search
                     </button>
-                  ))}
-                </div>
-
-                <div className="flex space-x-4">
-                  <FoodItems />
-                </div>
-              </div>
+                  </div>
+                  <FoodItems items={searchResults} />
+                </>
+              ) : (
+                <>
+                  <h2 className="mb-4 text-xl font-bold">Categories</h2>
+                  <div className="space-y-6">
+                    <div className="flex gap-3 overflow-x-auto">
+                      {[
+                        "Pizza",
+                        "Burger",
+                        "Biryani",
+                        "Chinese",
+                        "South Indian",
+                        "Desserts",
+                      ].map((category) => (
+                        <button
+                          key={category}
+                          className="whitespace-nowrap rounded-xl border bg-white px-5 py-3 hover:border-orange-500 hover:text-orange-500"
+                        >
+                          {category}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="flex space-x-4">
+                      <FoodItems />
+                    </div>
+                  </div>
+                </>
+              )}
 
             </div>
 

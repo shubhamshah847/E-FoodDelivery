@@ -1,8 +1,9 @@
 import itemModel from "../models/item.model.js";
 const searchFood = async (req, res) => {
+  console.log("_id:",req.user)
   try {
     const { query } = req.query;
-
+    console.log(query)
     const foods = await itemModel.find({
       $or: [
         {

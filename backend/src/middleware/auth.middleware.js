@@ -7,7 +7,7 @@ export const isAuth = (req,res,next)=>{
         req.user=decoded.id
         next()
     } catch (error) {
-        console.log(error)
+        console.error("Authentication token verification failed:", error)
         res.status(401).json({
             message:"you are not verified user"
         })

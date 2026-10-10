@@ -113,7 +113,7 @@ export default function OrderSucess({ order, onClose }) {
                 {/* Single Main Action Button (Pure Red #FF0000) */}
                 <div className="w-full mt-6">
                     <button
-                        onClick={() => alert(`Tracking order ${order.id}...`)}
+                      onClick={() => navigate('/get-my-orders')}
                         className="w-full bg-[#FF0000] hover:bg-red-700 active:bg-red-800 text-white font-black py-3.5 px-4 rounded-2xl shadow-lg shadow-[#FF0000]/30 flex items-center justify-center gap-2 transition-all active:scale-[0.98] text-sm tracking-wide"
                     >
                         <span>Track Order</span>

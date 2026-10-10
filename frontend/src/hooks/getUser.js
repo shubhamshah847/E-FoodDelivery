@@ -16,7 +16,7 @@ export async function getUserData(dispatch) {
         dispatch(setuserData(user.data));
 
     } catch (error) {
-        console.log(
+        console.error(
             "getUserData:",
             error.response?.data || error.message
         );

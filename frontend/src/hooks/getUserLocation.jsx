@@ -22,16 +22,15 @@ function useUserLocation() {
           const city = location_city?.data?.results?.[0].city;
           const address = location_city.data.results[0]?.address_line2;
           dispatch(setAddress(location_city.data.results[0]?.address_line2))
-          console.log(location_city.data.results[0]?.address_line2)
           dispatch(setCity(city));
           dispatch(setAddress(address))
 
         } catch (err) {
-          console.log("getUserLocation:", err);
+          console.error("Reverse geocoding failed:", err);
         }
       },
       (error) => {
-        console.log("Location permission error:", error);
+        console.error("Location permission error:", error);
       }
     );
   }, [userData]);

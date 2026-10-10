@@ -369,7 +369,7 @@ function CategoryRow({ categoryName, items }) {
 
 
 // ================= MAIN FOOD ITEMS =================
-function FoodItems() {
+function FoodItems({ items: searchedItems }) {
 
   const [groupedItems, setGroupedItems] = useState({});
   const [loading, setLoading] = useState(true);
@@ -390,21 +390,14 @@ function FoodItems() {
       );
       const fetchedItems = response.data.items || [];
 
-      console.log("f", fetchedItems);
-
       const shuffle = [...fetchedItems];
 
       for (let i = shuffle.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
 
-        console.log("i:", i, "j:", j);
-
         [shuffle[i], shuffle[j]] =
           [shuffle[j], shuffle[i]];
       }
-
-      console.log("s", shuffle);
-
 
       // GROUP BY CATEGORY
       const grouped = shuffle.reduce(
@@ -431,7 +424,7 @@ function FoodItems() {
 
     } catch (error) {
 
-      console.log(
+      console.error(
         "Get items error:",
         error
       );
@@ -445,8 +438,21 @@ function FoodItems() {
 
 
   useEffect(() => {
+    if (Array.isArray(searchedItems)) {
+      const grouped = searchedItems.reduce((acc, item) => {
+        const category = item.category || "Uncategorized";
+        if (!acc[category]) acc[category] = [];
+        acc[category].push(item);
+        return acc;
+      }, {});
+
+      setGroupedItems(grouped);
+      setLoading(false);
+      return;
+    }
+
     getItems();
-  }, []);
+  }, [searchedItems]);
 
 
   // LOADING

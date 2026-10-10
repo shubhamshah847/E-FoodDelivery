@@ -70,9 +70,8 @@ function YumzoChatbot() {
    
     try {
       let message = userMsg.text
-      
       const botReplyText = await axios.post(serverURI+'/api/chat', {
-         message
+        message
       })
       const fromAIMsg = botReplyText.data.answer
       const aiMsg = {

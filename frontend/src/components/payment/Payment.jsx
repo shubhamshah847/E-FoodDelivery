@@ -193,7 +193,7 @@ export default function Payment({ onClose, existingOrderId, onPaymentSuccess, ch
             </div>
 
             <button
-              onClick={() => navigate(`/order-details/${transactionData?.orderId}`)}
+              onClick={() => navigate('/get-my-orders')}
               className="mt-8 w-full max-w-md rounded-xl bg-orange-500 py-3.5 font-bold text-white shadow-lg shadow-orange-500/30 hover:bg-orange-600 active:scale-[0.99] transition-all"
             >
               View Order

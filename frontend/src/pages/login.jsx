@@ -29,8 +29,6 @@ const Login = () => {
       );
       
       dispatch(setuserData(response.data));
-      console.log("resonse - login:-", response);
-
       setMessage(response.data.message || "login successfully");
       setIsSuccess(true);
 
@@ -38,7 +36,7 @@ const Login = () => {
         navigate("/home");
       }, 1100);
     } catch (err) {
-      console.log("login api err :", err);
+      console.error("Login failed:", err);
       setMessage(
        err ||err.response?.data?.message || "Login failed. Please try again."
       );

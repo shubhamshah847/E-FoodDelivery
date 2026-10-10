@@ -3,13 +3,13 @@ import dotenv from 'dotenv'
 dotenv.config()
 import cors from 'cors'
 import Redis from 'ioredis'
-import connectToDb from './db/db.js'
-import authRoutes from '../src/routes/auth.routes.js'
-import shopRoutes from '../src/routes/shop.routes.js'
-import itemRoutes from '../src/routes/item.routes.js'
+import connectToDb from '../db/db.js'
+import authRoutes from '../routes/auth.routes.js'
+import shopRoutes from '../routes/shop.routes.js'
+import itemRoutes from '../routes/item.routes.js'
 import cookieParser from 'cookie-parser'
-import orderRoutes from '../src/routes/order.routes.js'
-import paymentRoutes from '../payment/razroPay/payment.routes.js'
+import orderRoutes from '../routes/order.routes.js'
+import paymentRoutes from '../../payment/razroPay/payment.routes.js'
 
 const app = express()
 connectToDb()

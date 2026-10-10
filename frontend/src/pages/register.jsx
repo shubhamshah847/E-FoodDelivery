@@ -47,7 +47,7 @@ const Register = () => {
       dispatch(setuserData(result.data));
       navigate("/home");
     } catch (err) {
-      console.log("err register :-", err);
+      console.error("Google registration failed:", err);
     } finally {
       setLoadingGoogle(false);
     }
@@ -79,7 +79,7 @@ const Register = () => {
 
       dispatch(setuserData(response.data));
     } catch (err) {
-      console.log("handleRegister err:-", err);
+      console.error("Registration failed:", err);
       setError(err?.response?.data?.message || "Something went wrong");
     } finally {
       setLoadingRegister(false);

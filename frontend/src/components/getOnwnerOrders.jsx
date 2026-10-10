@@ -22,9 +22,8 @@ const GetOwnerOrder = () => {
                 }
             );
             setOrders(result.data.orders || []);
-            console.log("userOrders", result.data)
         } catch (error) {
-            console.log(error);
+            console.error("Could not load owner orders:", error);
         } finally {
             setLoading(false);
         }
@@ -42,7 +41,7 @@ const GetOwnerOrder = () => {
             setShowOrderDetails(true);
         }
         catch (err) {
-            console.log("details err", err)
+            console.error("Could not load order details:", err)
         } finally {
             setDetailsLoadingId(null);
         }

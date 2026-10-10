@@ -9,7 +9,7 @@ router.post('/item/create',isAuth,upload.single('image'),addItem)
 router.post('/item/edit',isAuth,upload.single('image'),editItem)
 router.get('/get-my-items',isAuth,getItem)
 router.get('/get-all-items',isAuth,getAllItem)
-router.get('/search',searchFood)
+router.get('/search',isAuth,searchFood)
 
 
 export default router ;

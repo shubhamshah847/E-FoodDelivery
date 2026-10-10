@@ -59,7 +59,7 @@ export const addItem = async (req, res) => {
 
     } catch (err) {
 
-        console.log("Item not created:", err);
+        console.error("Item creation failed:", err);
 
         return res.status(500).json({
             message: "Item not created",
@@ -91,7 +91,6 @@ export const editItem = async(req,res)=>{
 }
 export const getItem = async(req,res)=>{
     const id = req.user
-    console.log("items",id)
     if(!id){
         return res.staus(401).json({
             message:"You are not authenticated"
@@ -99,18 +98,15 @@ export const getItem = async(req,res)=>{
     }
     try{
     const shop = await shopModel.find({owner:id})
-    console.log("shop",shop)
     const shopId = shop[0]._id
-    console.log("shopid",shopId)
     
     const items = await itemModel.find({shop:shopId})
-    console.log("items",items)
     if(!items) return res.status(404).json({message:"items not found"})
     
    res.status(200).json({messsage:"items fetched succesfully",items})
     }
    catch(err){
-    console.log("get- items:",err)
+    console.error("Owner items lookup failed:",err)
     res.staus(500).json({message:"some thing went wrong "})
 }
 
@@ -125,7 +121,7 @@ export const getAllItem = async(req,res)=>{
    res.status(200).json({messsage:"items fetched succesfully",items})
     }
    catch(err){
-    console.log("get- items:",err)
+    console.error("Items lookup failed:",err)
     res.staus(500).json({message:"some thing went wrong "})
 }
 }

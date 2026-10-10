@@ -1,7 +1,6 @@
 import {v2 as cloudinary} from 'cloudinary'
 import fs from 'fs'
 const cloudinaryUpload = async(file)=>{
-    console.log(file)
     cloudinary.config({ 
    cloud_name:process.env.MY_CLOUD_NAME, 
   api_key:process.env.CLOUDINARY_API_KEY, 
@@ -14,7 +13,7 @@ const cloudinaryUpload = async(file)=>{
   } catch (err) {  
     fs.unlinkSync(file)
    // fs.unlinkSync(file)
-    console.log("cloudinary uploader:- ",err)
+    console.error("Cloudinary upload failed:",err)
   }
 }
 export default cloudinaryUpload ;

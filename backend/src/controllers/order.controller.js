@@ -10,7 +10,6 @@ const createOrder = async (req, res) => {
         deliveryAddress,
         shopOrder
     } = req.body;
-    console.log("shoporder:",shopOrder)
     if (!payment || !shopOrder || !deliveryAddress) {
         return res.status(400).json({
             message: "All fields are required"
@@ -23,11 +22,7 @@ const createOrder = async (req, res) => {
 
         for (const shopData of shopOrder) {
 
-            console.log("SHOP ID FROM FRONTEND:", shopData.shop);
-
             const shopId = await shopModel.findById(shopData.shop);
-
-            console.log("SHOP FOUND:", shopId);
 
             if (!shopId) {
                 return res.status(404).json({
@@ -66,7 +61,6 @@ const createOrder = async (req, res) => {
 
                 // Find the actual food item
                 const item = await itemModel.findById(itemId);
-console.log(item)
                 if (!item) {
                     return res.status(404).json({
                         message: "Item does not exist"
@@ -74,8 +68,6 @@ console.log(item)
                 }
 
                 // Check stock
-                console.log(quantity)
-                console.log(item.quantity)
                 if (quantity > item.quantity) {
                     return res.status(400).json({
                         message: `Only ${item.quantity} ${item.name} items are available`
@@ -94,16 +86,12 @@ console.log(item)
                     subTotal: subTotal
                 });
             }
-            console.log("final",finalItemData)
-
             finalShopData.push({
                 shop: shopId._id,
                 owner: ownerId,
                 shopOrderItem: finalItemData
             });
         }
-        console.log("final",finalShopData)
-
         const orderId = `YUM-${crypto.randomBytes(4).toString("hex").toUpperCase()}`;
         const order = await orderModel.create({
             user: req.user,
@@ -114,8 +102,10 @@ console.log(item)
             orderId,
             status: "pending"
         });
-        console.log("order:",order)
-
+     await orderModel.findOneAndUpdate(
+    { orderId: order.orderId },
+    { status: "confirmed" }
+);
         return res.status(201).json({
             message: "Order created successfully",
             order
@@ -123,7 +113,7 @@ console.log(item)
 
     } catch (err) {
 
-        console.log("ORDER NOT CREATED:", err);
+        console.error("Order creation failed:", err);
 
         return res.status(500).json({
             message: "Order not created",
@@ -133,7 +123,6 @@ console.log(item)
 };
 const getMyOrder = async (req, res) => {
     const _id = req.user
-    console.log("order user id", _id)
     if (!_id) return res.status(401).json({ message: "Authentication failed. Please log in again." })
     try {
         const order = await orderModel.find({ user: _id })
@@ -143,7 +132,7 @@ const getMyOrder = async (req, res) => {
         if (order.length === 0) return res.status(404).json({ message: "order not found" })
         res.status(200).json({ message: "Orders fetched successfully!", order })
     } catch (err) {
-        console.log(err)
+        console.error("Order lookup failed:", err)
 
         res.status(500).json({
             message: "Unable to fetch orders right now. Please try again later."
@@ -179,7 +168,7 @@ const getShopOder = async (req, res) => {
 
         return res.status(200).json({ message: "Orders fetched successfully!", orders: ownerOrders });
     } catch (err) {
-        console.log(err)
+        console.error("Owner order lookup failed:", err)
         return res.status(500).json({
             message: "Unable to fetch orders right now. Please try again later."
 
@@ -212,7 +201,7 @@ const getOrderDetailsByOwner = async(req,res)=>{
 
         return res.status(200).json({ message: "Order details fetched", order: orderData });
     } catch (err) {
-        console.log("OWNER ORDER DETAILS ERROR:", err);
+        console.error("Owner order details lookup failed:", err);
         return res.status(500).json({ message: "Unable to fetch order details" });
     }
 }
@@ -271,7 +260,7 @@ const updateOrderStatusByOwner = async (req, res) => {
             }
         });
     } catch (err) {
-        console.log("OWNER ORDER STATUS UPDATE ERROR:", err);
+        console.error("Owner order status update failed:", err);
         return res.status(500).json({ message: "Unable to update order status" });
     }
 };

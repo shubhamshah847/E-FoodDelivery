@@ -11,12 +11,10 @@ export async function getShop(dispatch) {
             }
         );
 
-        console.log("shop:", result);
-
         dispatch(setShopData(result.data.shop));
 
     } catch (error) {
-        console.log(
+        console.error(
             "getShopDataerr:",
             error.response?.data || error.message
         );

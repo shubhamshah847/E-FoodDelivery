@@ -8,7 +8,7 @@ const router = express.Router()
 
 router.post('/shop/create',isAuth,upload.single('image'),shopController)
 router.get('/get-my-shop',isAuth,getMyShop)
-router.post('/chat',chatBotController)
+router.post('/chat',isAuth,chatBotController)
 
 export default router ;
 
