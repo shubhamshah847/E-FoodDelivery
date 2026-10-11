@@ -1,8 +1,35 @@
+# Dependencies
 node_modules/
+
+# Environment variables and secrets
 .env
 .env.*
-backend/.env
-frontend/.env
+!.env.example
 
-# Keep backend payment implementation out of Git
-/backend/payment/
+# Build output
+dist/
+build/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Coverage reports
+coverage/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Editor settings
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
+
+
+
+

@@ -90,27 +90,27 @@ export const registerController = async (req, res) => {
 }
 export const loginController = async (req, res) => {
     const { email, password } = req.body
-    if (!password.length >= 7) {
-        return res.status(400).json({
-            message: "min 6 letters password required"
-        })
-    }
     if (!email || !password) {
         return res.status(400).json({
             message: "email and password are required"
         })
     }
-    // try {
-         const isExist = await userModel.findOne({ email }).select('-password')
+    if (password.length < 6) {
+        return res.status(400).json({
+            message: "min 6 letters password required"
+        })
+    }
+    try {
+        const isExist = await userModel.findOne({ email })
         if (!isExist) {
             return res.status(422).json({
                 message: "user not exist"
             })
         }
         if (!isExist.isVerified) return res.status(403).json({ message: "verify your email" })
-    //     const isValidPassword = await bcrypt.compare(password, isExist.password)
+        const isValidPassword = await bcrypt.compare(password, isExist.password)
 
-    //     if (isValidPassword) {
+        if (isValidPassword) {
 
             const token = jwt.sign({
                 id: isExist._id
@@ -124,19 +124,21 @@ export const loginController = async (req, res) => {
                 maxAge: 15 * 24 * 60 * 60 * 1000
             })
             return res.status(200).json({
-                messgae: "login successfully", isExist
+                message: "login successfully",
+                user: { ...isExist.toObject(), password: undefined }
              })
          }
 
-    //     return res.status(400).json({
-    //         message: "email or password wrong"
-    //     })
-    // }
-    // catch (err) {
-    //     res.status(500).json({
-    //         message: "not logged something went wrong"
-    //     })
-    // }
+        return res.status(400).json({
+            message: "email or password wrong"
+        })
+    }
+    catch (err) {
+        res.status(500).json({
+            message: "not logged something went wrong"
+        })
+    }
+}
 
 export const otpVerify = async (req, res) => {
     const { _id, otp } = req.body
