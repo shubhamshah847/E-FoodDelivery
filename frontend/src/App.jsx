@@ -25,7 +25,7 @@ import CheckOut from "./pages/checkOut";
 import GetMyOrders from "./components/getUserOrders";
 import GetOwnerOrder from "./components/getOnwnerOrders";
 
-export const serverURI = "http://localhost:3000";
+export const serverURI = "https://yumzo-food.vercel.app";
 
 function App() {
 
