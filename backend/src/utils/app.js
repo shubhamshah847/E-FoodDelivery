@@ -15,7 +15,7 @@ const app = express()
 connectToDb()
 export const redis = new Redis(process.env.REDIS_URI)
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: "https://yumzo-food.vercel.app",
   credentials: true
 }));
 app.use(cookieParser())
