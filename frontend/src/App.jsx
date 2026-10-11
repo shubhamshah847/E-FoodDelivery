@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import Splash from "./pages/splash";
 import Register from "./pages/register";
@@ -18,7 +18,7 @@ import VerifyOtp from "./pages/otp";
 import OwnerDashBoard from "./components/ownerDashBoard";
 
 import { getUserData } from "./hooks/getUser";
-import getUserLocation from "./hooks/getUserLocation";
+import useUserLocation from "./hooks/getUserLocation";
 import { getShop } from "./hooks/getShop";
 import Cart from "./pages/cart";
 import CheckOut from "./pages/checkOut";
@@ -30,16 +30,31 @@ export const serverURI = "http://localhost:3000";
 function App() {
 
     const dispatch = useDispatch();
+    const [isCheckingSession, setIsCheckingSession] = useState(true);
 
     useEffect(() => {
-        getUserData(dispatch);
-        getShop(dispatch)
+        let isMounted = true;
+
+        const initializeApp = async () => {
+            try {
+                await getUserData(dispatch);
+                await getShop(dispatch);
+            } finally {
+                if (isMounted) {
+                    setIsCheckingSession(false);
+                }
+            }
+        };
+
+        initializeApp();
+
+        return () => {
+            isMounted = false;
+        };
     }, [dispatch]);
 
-    getUserLocation();
-    
-
     const { userData } = useSelector((state) => state.user);
+    useUserLocation();
 
     return (
         <Routes>
@@ -48,9 +63,11 @@ function App() {
             <Route
                 path="/"
                 element={
-                    !userData
+                    isCheckingSession
                         ? <Splash />
-                        : <Navigate to="/home" replace />
+                        : !userData
+                            ? <Splash />
+                            : <Navigate to="/home" replace />
                 }
             />
 
