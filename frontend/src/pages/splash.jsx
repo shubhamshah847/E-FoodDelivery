@@ -9,6 +9,14 @@ const Splash = () => {
       <div className="yumzo-orb orb-1"></div>
       <div className="yumzo-orb orb-2"></div>
 
+      <header className="splash-header">
+        <a className="splash-brand" href="/" aria-label="Yumzo home">
+          <span className="splash-brand-mark">Y</span>
+          <span>yumzo</span>
+        </a>
+        <span className="demo-pill"><span /> Demo experience</span>
+      </header>
+
       {/* Floating food */}
       <div className="food food-1">🍕</div>
       <div className="food food-2">🍔</div>
@@ -18,24 +26,25 @@ const Splash = () => {
       {/* Main Content */}
       <div className="yumzo-content">
 
-        {/* Logo */}
-        <div className="yumzo-logo">
-          <span>Y</span>
+        <div className="hero-kicker">
+          <span>GOOD FOOD, GOOD MOOD</span>
         </div>
 
-        {/* App Name */}
-        <h1>Yumzo</h1>
+        <h1 className="hero-title">
+          Your next favorite meal<br />
+          <span>is just a click away.</span>
+        </h1>
 
-        {/* Tagline */}
         <p className="yumzo-tagline">
-          Your cravings, delivered.
+          Meet Yumzo — a little demo built for big cravings.
         </p>
 
-        {/* Description */}
         <p className="yumzo-description">
-          Discover delicious food from your favorite restaurants
-          <br />
-          and get it delivered right to your doorstep.
+          Explore the experience, discover tasty picks, and follow an order from cart to doorstep.
+        </p>
+
+        <p className="hero-demo-note">
+          <span aria-hidden="true">✦</span> Demo website — orders and payments are not real.
         </p>
 
         {/* Buttons */}
@@ -57,21 +66,12 @@ const Splash = () => {
 
       {/* Footer */}
       <footer className="yumzo-footer">
-
-        <div className="footer-line"></div>
-
-        <p>
-          Made with <span>♥</span> for food lovers
-        </p>
-
-        <h4>
-          Developed by <strong>Shubham Shah</strong>
-        </h4>
-
-        <small>
-          © 2026 Yumzo
-        </small>
-
+        <span className="footer-credit">Made with <span aria-label="love">♥</span> by</span>
+        <strong className="footer-developer">Shubham Shah</strong>
+        <a className="website-link" href="https://shubhamsah.com.np" target="_blank" rel="noreferrer">
+          shubhamsah.com.np <span aria-hidden="true">↗</span>
+        </a>
+        <small>© 2026 Yumzo · Demo project, not a real food-delivery service</small>
       </footer>
 
     </div>
