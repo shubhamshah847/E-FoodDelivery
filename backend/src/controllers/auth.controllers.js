@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 import cookieParser from "cookie-parser"
 import mongoose from "mongoose"
 import bcrypt from 'bcrypt'
-import { redis } from "../app.js"
+import { redis } from "../utils/app.js"
 import generateOtp from "../utils/otp.js"
 import { sendOtp, regrestationEmail } from "../services/email.service.js"
 import otpModel from "../models/otp.model.js"
