@@ -13,7 +13,7 @@ import paymentRoutes from '../../payment/razroPay/payment.routes.js'
 const app = express()
 connectToDb()
 app.use(cors({
-  origin: "https://yumzo-food.vercel.app",
+  origin: "https://yumzo-frontend.onrender.com",
   credentials: true
 }));
 app.use(cookieParser())
