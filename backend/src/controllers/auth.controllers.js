@@ -1,12 +1,18 @@
 import userModel from "../models/user.models.js"
 import jwt from 'jsonwebtoken'
-import cookieParser from "cookie-parser"
-import mongoose from "mongoose"
 import bcrypt from 'bcrypt'
-import { redis } from "../utils/app.js"
 import generateOtp from "../utils/otp.js"
 import { sendOtp, regrestationEmail } from "../services/email.service.js"
 import otpModel from "../models/otp.model.js"
+
+const saveOtp = async (userId, otp) => {
+    await otpModel.deleteMany({ userId })
+    return otpModel.create({
+        userId,
+        otp,
+        expiresAt: new Date(Date.now() + 5 * 60 * 1000)
+    })
+}
 
 
 
@@ -48,21 +54,12 @@ export const registerController = async (req, res) => {
             password: authValue
         })
         const otp = generateOtp()
-        try {
-            redis.set(`otp:${user._id}`, otp, "EX", 300)
-        } catch (err) {
-            console.error("Redis OTP write failed:", err)
-        }
-
-        //    const userOtp =  await otpModel.create({
-        //     userId:user._id
-        //     ,otp
-        // })
         if (!otp) {
             return res.status(500).json({
                 message: "otp not generated"
             })
         }
+        await saveOtp(user._id, otp)
         try {
             await sendOtp(user.email, user.name, otp) // email send
         } catch (error) {
@@ -79,7 +76,6 @@ export const registerController = async (req, res) => {
 
     }
     catch (err) {
-        await session.abortTransaction();
         console.error("User registration failed:", err)
         res.status(500).json({
             message: "user not created"
@@ -119,8 +115,8 @@ export const loginController = async (req, res) => {
             })
             res.cookie('token', token, {
                 httpOnly: true,
-                secure: false,
-                sameSite: 'lax',
+                secure: true,
+                sameSite: 'none',
                 maxAge: 15 * 24 * 60 * 60 * 1000
             })
             return res.status(200).json({
@@ -148,84 +144,64 @@ export const otpVerify = async (req, res) => {
         })
     }
     try {
-        // const DbOtp = await otpModel.findOne({userId:_id})
-        try {
-            const redisOtp = await redis.get(`otp:${_id}`)
-            if (!redisOtp) return res.status(400).json({ message: "otp not found or expired" })
-            const isOptValid = redisOtp === otp
-         if (!isOptValid) {
+        const storedOtp = await otpModel.findOne({ userId: _id }).sort({ createdAt: -1 })
+        if (!storedOtp) {
             return res.status(400).json({
-                message: "otp wrong"
+                message: "otp not found or expired"
             })
         }
-        } catch (error) {
-            console.error("Redis OTP lookup failed:", error)
+
+        if (storedOtp.expiresAt <= new Date()) {
+            await otpModel.deleteOne({ _id: storedOtp._id })
+            return res.status(400).json({ message: "OTP expired" })
         }
 
-        const ttl = await redis.ttl(`otp:${_id}`);
-
-        if (ttl === -2) {
+        if (storedOtp.otp !== String(otp)) {
             return res.status(400).json({
-                message: "OTP expired"
+                message: "otp wrong"
             });
         }
 
-       
         const userUpdate_verified = await userModel.findByIdAndUpdate(_id,
             { isVerified: true }, { new: true }
         )
-        await redis.del(`otp:{_id}`)
-        res.status(200).json({
-            message: "otp verified"
-        })
-        try {
-            //  await otpModel.deleteOne({userId:_id})
-            await regrestationEmail(userUpdate_verified.email, userUpdate_verified.name)
-        }
-        catch (err) {
-            await redis.del(`otp:{_id}`)
-            console.error("Registration email failed:", err)
-            return res.status(500).json({
-                message: "send regrestation email failed"
-            })
+        if (!userUpdate_verified) {
+            return res.status(404).json({ message: "user not found" })
         }
 
+        await otpModel.deleteOne({ _id: storedOtp._id })
+        await regrestationEmail(userUpdate_verified.email, userUpdate_verified.name)
+        return res.status(200).json({ message: "otp verified" })
 
     }
     catch (err) {
         console.error("OTP verification failed:", err)
-        res.status(500).json({
-            message: "something went worng while verifying otp "
+        return res.status(500).json({
+            message: "something went wrong while verifying otp"
         })
     }
 
 }
 export const otpNewGenerate = async (req, res) => {
     const { _id } = req.body
-    const isOtpExist = await otpModel.findOne({ userId: _id })
-
-    // if(isOtpExist){
-    //     await otpModel.deleteMany({userId:_id})
-    // }
-    const otp = generateOtp()
     try {
-        //  await otpModel.create({
-        //     userId:_id,otp
-        //  })
-        const redisOtp = await redis.set(`otp:${_id}`, otp, "EX", 300)
-
-
-
         const user = await userModel.findById(_id)
+        if (!user) {
+            return res.status(404).json({ message: "user not found" })
+        }
+
+        const otp = generateOtp()
+        await saveOtp(user._id, otp)
         try {
             await sendOtp(user.email, user.name, otp) 
         }
         catch (err) {
-            res.status(500).json({
+            console.error("OTP email send failed:", err)
+            return res.status(500).json({
                 message: "email not send"
             })
         }
-        res.status(200).json({
+        return res.status(200).json({
             message: "otp send"
         })
     }

@@ -1,4 +1,3 @@
-import { flattenNestedArrayItems } from "ioredis/built/replyTransformers.js"
 import itemModel from "../models/item.model.js"
 import shopModel from "../models/shop.model.js"
 import cloudinaryUpload from "../utils/cloudinary.js"

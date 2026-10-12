@@ -2,7 +2,6 @@ import express from 'express'
 import dotenv from 'dotenv'
 dotenv.config()
 import cors from 'cors'
-import Redis from 'ioredis'
 import connectToDb from '../db/db.js'
 import authRoutes from '../routes/auth.routes.js'
 import shopRoutes from '../routes/shop.routes.js'
@@ -13,7 +12,6 @@ import paymentRoutes from '../../payment/razroPay/payment.routes.js'
 
 const app = express()
 connectToDb()
-export const redis = new Redis(process.env.REDIS_URI)
 app.use(cors({
   origin: "https://yumzo-food.vercel.app",
   credentials: true
