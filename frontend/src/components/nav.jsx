@@ -282,6 +282,7 @@ function Nav() {
       formData.append("foodType", itemFoodType);
       formData.append("image", itemImage);
       formData.append("discount", itemDiscount);
+      formData.append("quantity",itemQuantity)
 
       const response = await axios.post(
         serverURI + "/api/item/create",
@@ -330,6 +331,7 @@ function Nav() {
       formData.append("foodType", itemFoodType);
       formData.append("image", itemImage);
       formData.append("discount", itemDiscount);
+      formData.append("quantity",itemQuantity)
 
       const response = await axios.post(
         serverURI + "/api/item/create",
@@ -355,6 +357,7 @@ function Nav() {
 
       console.error("Item update failed:", error);
       setEditingItem(false)
+      console.log(error)
       alert(
         error.response?.data?.message ||
         "Failed to add food item"
