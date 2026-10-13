@@ -13,9 +13,6 @@ const saveOtp = async (userId, otp) => {
         expiresAt: new Date(Date.now() + 5 * 60 * 1000)
     })
 }
-
-
-
 export const registerController = async (req, res) => {
     const { name, email, password, googleId } = req.body
     if (!email || !name) {
@@ -135,7 +132,6 @@ export const loginController = async (req, res) => {
         })
     }
 }
-
 export const otpVerify = async (req, res) => {
     const { _id, otp } = req.body
     if (!_id || !otp) {
@@ -244,6 +240,7 @@ export const registerGoogleController = async (req, res) => {
             name, email,
             password: googleId
         })
+        
         const updated_user = await userModel.findByIdAndUpdate(user._id,
             { isVerified: true }, { new: true }
         )
@@ -259,9 +256,13 @@ export const registerGoogleController = async (req, res) => {
             sameSite: 'lax',
             maxAge: 15 * 24 * 60 * 60 * 1000
         })
+        try{
         await regrestationEmail(updated_user.email, updated_user.name)
 
-
+        }
+        catch(err){
+            console.log(err)
+        }
         res.status(200).json({
             message: "user created successfully",
             user: user
@@ -272,7 +273,7 @@ export const registerGoogleController = async (req, res) => {
         // await session.abortTransaction();
         console.error("Google registration failed:", err)
         res.status(500).json({
-            message: "user not created"
+            message:"user not created"
         })
     }
 
