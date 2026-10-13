@@ -4,7 +4,7 @@ import userModel from "../models/user.models.js"
 import itemModel from "../models/item.model.js";
 import crypto from 'crypto'
 const createOrder = async (req, res) => {
-
+  console.log("hello")
     const {
         payment,
         deliveryAddress,

@@ -10,7 +10,7 @@ export const addItem = async (req, res) => {
             category,
             price,
             discount,
-            foodType
+            foodType,quantity
         } = req.body;
 
         // Required fields
@@ -48,7 +48,7 @@ export const addItem = async (req, res) => {
             category,
             price: Number(price),
             discount: Number(discount) || 0,
-            foodType
+            foodType,quantity
         });
 
         return res.status(201).json({

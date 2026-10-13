@@ -4,7 +4,7 @@ import orderController from '../controllers/order.controller.js';
 
 const router = express.Router()
 
-router.post('/order',isAuth,orderController.createOrder)
+router.post('/order',orderController.createOrder)
 router.get('/order/get-my-orders',isAuth,orderController.getMyOrder)
 router.get('/owner/order/get-my-orders',isAuth,orderController.getShopOder)
 router.get('/owner/get-order-details/:orderId',isAuth,orderController.getOrderDetailsByOwner)
