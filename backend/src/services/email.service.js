@@ -4,7 +4,7 @@ import { Resend } from "resend";
 
 dotenv.config();
 
-const resend = new Resend(process.env.RESEND_EMAIL_API_KEY);
+const resend = new Resend(process.env.RESENDEMAIL_API_KEY);
 
 // Registration successful email
 export async function regrestationEmail(userEmail, name) {
@@ -108,7 +108,7 @@ Nepal 🇳🇵
 
 
 // OTP verification email
-export async function sendEmail(userEmail, name, otp) {
+export async function sendOtp(userEmail, name, otp) {
   const subject = "Your Food Delivery Verification Code 🍔";
 
   const text = `
