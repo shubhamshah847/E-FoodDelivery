@@ -60,7 +60,7 @@ export const registerController = async (req, res) => {
         try {
             await sendOtp(user.email, user.name, otp) // email send
         } catch (error) {
-            res.status(500).json({message:"otp cant send . try agian"})
+              return    res.status(500).json({message:"otp cant send . try agian"})
           console.error("OTP email send failed:", error)
           return
         }
