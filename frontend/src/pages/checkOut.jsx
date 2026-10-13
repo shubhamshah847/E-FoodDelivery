@@ -210,9 +210,9 @@ function CheckOut() {
   }
 
   const finalAddress = (address || "").trim() || "Delivery location not provided";
-
+try{
   const orderPlace = await axios.post(
-    serverURI + "/user/order",
+    serverURI +"/user/order",
     {
       payment: selectedPaymentMethod,
       deliveryAddress: finalAddress,
@@ -229,6 +229,10 @@ function CheckOut() {
   setShowError(false);
   setShowMessage(true);
   return createdOrder;
+}
+catch(err){
+  console.log("err order not created:-",err)
+}
 };
 
  const handleOrder = async () => {
