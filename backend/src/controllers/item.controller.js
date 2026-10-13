@@ -48,7 +48,7 @@ export const addItem = async (req, res) => {
             category,
             price: Number(price),
             discount: Number(discount) || 0,
-            foodType,quantity
+            foodType,quantity:Number(quantity)||0
         });
 
         return res.status(201).json({
