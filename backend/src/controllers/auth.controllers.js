@@ -57,9 +57,15 @@ export const registerController = async (req, res) => {
             })
         }
         await saveOtp(user._id, otp)
+<<<<<<< HEAD
       
             await sendOtp(user.email, user.name, otp) // email send
         
+=======
+       
+            await sendOtp(user.email, user.name, otp) // email send
+       
+>>>>>>> 29ce4193b6f220c9d08f6068bb2de3d69b4526e9
 
 
         res.status(200).json({
