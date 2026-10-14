@@ -69,15 +69,13 @@ const Register = () => {
         }
       );
       setError("");
-      setMessage("Registration completed");
+      setMessage(response.data.message || "Verification code sent to your email.");
 
       navigate("/register/verify-otp", {
         state: {
           userId: response.data.user._id,
         },
       });
-
-      dispatch(setuserData(response.data));
     } catch (err) {
       console.error("Registration failed:", err);
       setError(err?.response?.data?.message || "Something went wrong");
@@ -87,13 +85,9 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center items-center px-4 py-12 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Background Subtle Accent Lights */}
-      <div className="absolute -top-40 -left-40 w-80 h-80 bg-orange-200 rounded-full blur-3xl opacity-50 pointer-events-none" />
-      <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-amber-200 rounded-full blur-3xl opacity-50 pointer-events-none" />
-
+    <div className="auth-screen">
       {/* Main Container */}
-      <div className="w-full max-w-md space-y-8 bg-white p-8 sm:p-10 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 z-10">
+      <div className="auth-card w-full max-w-md space-y-8 p-8 sm:p-10 z-10">
         
         {/* Header & Logo */}
         <div className="text-center">

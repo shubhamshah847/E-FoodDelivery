@@ -34,7 +34,7 @@ console.log(shopOrder)
                 });
             }
 
-            const shopId = await shopModel.findById(shopData.shop);
+            const shopId = await shopModel.findById(shopData.shop); // [ { shop: '200000000000000000000005', items: [ [Object] ] } ]
 
             if (!shopId) {
                 return res.status(404).json({

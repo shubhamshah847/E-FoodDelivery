@@ -34,7 +34,7 @@ const VerifyOtp = () => {
   // Safeguard: Redirect if userId is missing
   useEffect(() => {
     if (!userId) {
-      navigate("/login", { replace: true });
+      navigate("/register/user", { replace: true });
     }
   }, [userId, navigate]);
 

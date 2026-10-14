@@ -4,10 +4,20 @@ import { Resend } from "resend";
 
 dotenv.config();
 
-const resend = new Resend(process.env.RESENDEMAIL_API_KEY);
-if(resend){
-  console.log("connected to email")
-}
+const resendApiKey = process.env.RESENDEMAIL_API_KEY;
+const senderEmail = process.env.RESEND_SENDER_EMAIL || "onboarding@resend.dev";
+const fromAddress = process.env.RESEND_FROM || `Yumzo <${senderEmail}>`;
+
+const resend = resendApiKey ? new Resend(resendApiKey) : null;
+
+const ensureEmailConfig = () => {
+  if (!resendApiKey || !senderEmail) {
+    console.error("Resend email config missing: check RESENDEMAIL_API_KEY and RESEND_SENDER_EMAIL in env");
+    return false;
+  }
+  return true;
+};
+
 // Registration successful email
 export async function regrestationEmail(userEmail, name) {
   const subject =
@@ -87,8 +97,12 @@ Nepal 🇳🇵
 `;
 
   try {
+    if (!ensureEmailConfig()) {
+      return false;
+    }
+
     const { data, error } = await resend.emails.send({
-      from: `SHUBHAM SHAH <${process.env.EMAIL_USER}>`,
+      from: fromAddress,
       to: userEmail,
       subject,
       text,
@@ -178,8 +192,12 @@ Nepal 🇳🇵
 `;
 
   try {
+    if (!ensureEmailConfig()) {
+      return false;
+    }
+
     const { data, error } = await resend.emails.send({
-      from: `SHUBHAM SHAH <${process.env.EMAIL_USER}>`,
+      from: fromAddress,
       to: userEmail,
       subject,
       text,

@@ -2,7 +2,7 @@ import userModel from "../models/user.models.js"
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import generateOtp from "../utils/otp.js"
-import { sendOtp, regrestationEmail } from "../services/email.service.js"
+import {sendOtp, regrestationEmail } from "../services/email.service.js"
 import otpModel from "../models/otp.model.js"
 
 const saveOtp = async (userId, otp) => {
@@ -50,26 +50,34 @@ export const registerController = async (req, res) => {
             name, email,
             password: authValue
         })
+
         const otp = generateOtp()
         if (!otp) {
             return res.status(500).json({
                 message: "otp not generated"
             })
         }
+
         await saveOtp(user._id, otp)
-      
-            await sendOtp(user.email, user.name, otp) // email send
-        
 
-       
-            await sendOtp(user.email, user.name, otp) // email send
-       
+        const emailSent = await sendOtp(user.email, user.name, otp)
+        if (!emailSent) {
+            await otpModel.deleteMany({ userId: user._id })
+            await userModel.findByIdAndDelete(user._id)
+            return res.status(500).json({
+                message: "Unable to send verification email. Please try again."
+            })
+        }
 
-
-
-        res.status(200).json({
-            message: "user created successfully",
-            user: user
+        return res.status(200).json({
+            message: "Verification code sent. Please verify your email.",
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                isVerified: user.isVerified,
+                isOwner: user.isOwner
+            }
         })
 
     }
@@ -189,17 +197,17 @@ export const otpNewGenerate = async (req, res) => {
 
         const otp = generateOtp()
         await saveOtp(user._id, otp)
-        try {
-            await sendOtp(user.email, user.name, otp) 
-        }
-        catch (err) {
-            console.error("OTP email send failed:", err)
+
+        const emailSent = await sendOtp(user.email, user.name, otp)
+        if (!emailSent) {
+            await otpModel.deleteMany({ userId: user._id })
             return res.status(500).json({
-                message: "email not send"
+                message: "Unable to send verification email. Please try again."
             })
         }
+
         return res.status(200).json({
-            message: "otp send"
+            message: "otp send",
         })
     }
     catch (err) {

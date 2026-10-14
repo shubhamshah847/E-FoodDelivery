@@ -28,39 +28,41 @@ function FoodCard({ item }) {
   };
 
   return (
-    <div className="group relative w-[200px] shrink-0 overflow-hidden rounded-2xl border border-gray-100 bg-white p-2 transition duration-300 hover:-translate-y-1 hover:shadow-xl sm:w-[240px]">
+    <div className="group relative w-[200px] shrink-0 overflow-hidden rounded-[26px] border border-orange-100 bg-white/90 p-2 shadow-[0_12px_28px_rgba(15,23,42,0.06)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_22px_45px_rgba(249,115,22,0.18)] sm:w-[240px]">
 
       {/* IMAGE */}
-      <div className="relative h-40 overflow-hidden rounded-xl bg-gray-100 sm:h-44">
+      <div className="relative h-40 overflow-hidden rounded-[20px] bg-gradient-to-br from-orange-100 to-amber-50 sm:h-44">
 
         <img
           src={item.image}
           alt={item.name}
           loading="lazy"
-          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+          className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
         />
+
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/25 via-transparent to-white/5" />
 
         {/* DISCOUNT */}
         {item.discount > 0 && (
-          <div className="absolute left-2 top-2 rounded-md bg-red-600 px-2 py-1 text-[11px] font-bold text-white shadow-sm">
-            {item.discount}%
+          <div className="absolute left-2 top-2 rounded-full bg-red-500 px-2 py-1 text-[10px] font-bold text-white shadow-md">
+            {item.discount}% OFF
           </div>
         )}
 
         {/* VEG / NON-VEG */}
-        <div className="absolute right-2 top-2 rounded-md bg-white/95 px-2 py-1 shadow-sm backdrop-blur">
+        <div className="absolute right-2 top-2 rounded-full bg-white/90 px-2 py-1 shadow-sm backdrop-blur-sm">
           <div className="flex items-center gap-1">
 
             <span
               className={`h-2 w-2 rounded-full ${item.foodType === "veg"
-                  ? "bg-green-600"
+                  ? "bg-emerald-600"
                   : "bg-red-600"
                 }`}
             ></span>
 
             <span
               className={`text-[9px] font-bold ${item.foodType === "veg"
-                  ? "text-green-700"
+                  ? "text-emerald-700"
                   : "text-red-700"
                 }`}
             >
@@ -72,67 +74,70 @@ function FoodCard({ item }) {
       </div>
 
       {/* DETAILS */}
-     <div className="px-1 pb-1 pt-3">
-  {/* NAME & QUANTITY INFO */}
-  <h3 className="truncate text-sm font-semibold text-gray-900 sm:text-base">
-    {item.name}
-  </h3>
-  <span className="text-xs text-gray-500">Qty: {item.quantity}</span>
+      <div className="px-1 pb-1 pt-3">
+        <div className="flex items-start justify-between gap-3">
+          <h3 className="truncate text-sm font-bold text-slate-900 sm:text-base">
+            {item.name}
+          </h3>
+          <span className="rounded-full bg-orange-50 px-2 py-1 text-[10px] font-semibold text-orange-600">
+            {item.category}
+          </span>
+        </div>
+        <div className="mt-2 flex items-center justify-between text-xs text-slate-500">
+          <span>Qty: {item.quantity}</span>
+          <span className="flex items-center gap-1 text-amber-500">⭐ 4.8</span>
+        </div>
 
-  {/* PRICE SECTION */}
-  <div className="mt-2 flex items-center gap-2">
-    <span className="text-base font-bold text-gray-900 sm:text-lg">
-      ₹{finalPrice}
-    </span>
+        <div className="mt-3 flex items-center gap-2">
+          <span className="text-base font-black text-slate-900 sm:text-lg">
+            ₹{finalPrice}
+          </span>
 
-    {item.discount > 0 && (
-      <span className="text-[11px] font-medium text-gray-400 line-through">
-        ₹{item.price}
-      </span>
-    )}
-  </div>
+          {item.discount > 0 && (
+            <span className="text-[11px] font-medium text-slate-400 line-through">
+              ₹{item.price}
+            </span>
+          )}
+        </div>
 
-  <p className="mt-0.5 text-[9px] text-gray-400">
-    Inclusive of all taxes
-  </p>
+        <p className="mt-1 text-[9px] text-slate-400">
+          Inclusive of all taxes
+        </p>
 
-  {/* CART BUTTON / CONTROLS */}
-  <div className="mt-3 flex justify-end">
-    {quantity === 0 ? (
-      /* ADD BUTTON */
-      <button
-        type="button"
-        onClick={() => dispatch(setAddToCart(item))}
-        className="flex h-9 w-9 items-center justify-center rounded-full bg-orange-500 text-white shadow-sm transition hover:scale-105 hover:bg-orange-600 active:scale-90"
-      >
-        <FiPlus size={20} />
-      </button>
-    ) : (
-      /* QUANTITY CONTROLS */
-      <div className="flex items-center gap-2 rounded-full border border-orange-500 bg-white px-1 py-1 shadow-sm">
-        <button
-          type="button"
-          onClick={decreaseQuantity}
-          className="flex h-7 w-7 items-center justify-center rounded-full bg-orange-100 text-orange-600 transition hover:bg-orange-200 active:scale-90"
-        >
-          <FiMinus size={15} />
-        </button>
+        {/* CART BUTTON / CONTROLS */}
+        <div className="mt-3 flex justify-end">
+          {quantity === 0 ? (
+            <button
+              type="button"
+              onClick={() => dispatch(setAddToCart(item))}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/25 transition hover:scale-105 active:scale-90"
+            >
+              <FiPlus size={20} />
+            </button>
+          ) : (
+            <div className="flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-1 py-1 shadow-sm">
+              <button
+                type="button"
+                onClick={decreaseQuantity}
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-orange-600 transition hover:bg-orange-100 active:scale-90"
+              >
+                <FiMinus size={15} />
+              </button>
 
-        <span className="min-w-[24px] text-center text-sm font-bold text-gray-800">
-          {quantity}
-        </span>
+              <span className="min-w-[24px] text-center text-sm font-bold text-slate-800">
+                {quantity}
+              </span>
 
-        <button
-          type="button"
-          // onClick={increaseQuantity}
-          className="flex h-7 w-7 items-center justify-center rounded-full bg-orange-500 text-white transition hover:bg-orange-600 active:scale-90"
-        >
-          <FiPlus size={15} />
-        </button>
+              <button
+                type="button"
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-orange-500 text-white transition hover:bg-orange-600 active:scale-90"
+              >
+                <FiPlus size={15} />
+              </button>
+            </div>
+          )}
+        </div>
       </div>
-    )}
-  </div>
-</div>
     </div>
   );
 }

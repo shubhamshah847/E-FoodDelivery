@@ -394,41 +394,50 @@ function Nav() {
 
       {/* ================= NAVBAR ================= */}
 
-      <nav className="fixed top-0 left-0 w-full h-16 z-50 bg-white border-b border-gray-200 shadow-sm px-4 md:px-8 flex items-center justify-between">
-        {/* ================= LEFT ================= */}
+      <nav className="fixed top-0 left-0 z-50 h-20 w-full border-b border-orange-100/80 bg-white/80 px-4 shadow-[0_10px_30px_rgba(15,23,42,0.05)] backdrop-blur-xl md:px-8">
+        <div className="mx-auto flex h-full max-w-7xl items-center justify-between gap-4">
+          {/* ================= LEFT ================= */}
 
-        <div className="flex items-center gap-5">
+          <div className="flex items-center gap-5">
 
-          {/* LOGO */}
+            {/* LOGO */}
 
-          <div>
+            <div className="flex items-center gap-3">
 
-            {isOwner ? (
+              {isOwner ? (
 
-              <div>
+                <div>
 
-                <h1 className="text-2xl font-bold text-orange-500">
-                  Yumzo
-                </h1>
+                  <div className="flex items-center gap-2">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-amber-400 text-lg font-black text-white shadow-lg shadow-orange-500/20">Y</div>
+                    <h1 className="text-2xl font-black tracking-[-0.06em] text-orange-600">
+                      Yumzo
+                    </h1>
+                  </div>
 
-                <p className="text-[10px] font-bold text-gray-500">
-                  PARTNER
-                </p>
+                  <p className="text-[10px] font-bold tracking-[0.22em] text-slate-500">
+                    PARTNER
+                  </p>
 
-              </div>
+                </div>
 
-            ) : (
+              ) : (
 
-              <h1 className="text-2xl font-bold text-orange-500">
-                Yumzo
-              </h1>
+                <div className="flex items-center gap-2">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-amber-400 text-lg font-black text-white shadow-lg shadow-orange-500/20">Y</div>
+                  <h1 className="text-2xl font-black tracking-[-0.06em] text-orange-600">
+                    Yumzo
+                  </h1>
+                </div>
 
-            )}
+              )}
 
-          </div>
+            </div>
 
 
           {/* ================= CREATE SHOP POPUP ================= */}
+
+          </div>
 
           {showCreateShop && (
 
@@ -1273,10 +1282,10 @@ function Nav() {
 
           )}
 
-        </div>
+          </div>
 
 
-        {/* ================= USER SEARCH ================= */}
+          {/* ================= USER SEARCH ================= */}
 
         {!isOwner && (
 

@@ -54,6 +54,8 @@ function App() {
     }, [dispatch]);
 
     const { userData } = useSelector((state) => state.user);
+    const currentUser = userData?.user ?? userData ?? null;
+    const isVerifiedUser = Boolean(currentUser?.isVerified);
     useUserLocation();
 
     return (
@@ -95,16 +97,20 @@ function App() {
             <Route
                 path="/home"
                 element={
-                    userData
+                    currentUser && isVerifiedUser
                         ? <Home />
-                        : <Navigate to="/register/user"  />
+                        : <Navigate to="/register/user" replace />
                 }
             />
 
             {/* Verify OTP */}
             <Route
                 path="/register/verify-otp"
-                element={<VerifyOtp />}
+                element={
+                    currentUser && !isVerifiedUser
+                        ? <VerifyOtp />
+                        : <Navigate to="/login/user" replace />
+                }
             />
 
            
