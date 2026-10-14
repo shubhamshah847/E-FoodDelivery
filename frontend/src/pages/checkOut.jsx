@@ -210,11 +210,14 @@ function CheckOut() {
   }
 
   const finalAddress = (address || "").trim() || "Delivery location not provided";
+  const paymentMethodValue = selectedPaymentMethod || paymentMethod;
+
 try{
   const orderPlace = await axios.post(
     serverURI +"/user/order",
     {
-      payment: selectedPaymentMethod,
+      payment: paymentMethodValue,
+      paymentMethod: paymentMethodValue,
       deliveryAddress: finalAddress,
       shopOrder: shopOrder
     },

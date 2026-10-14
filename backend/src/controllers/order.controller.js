@@ -6,7 +6,7 @@ import crypto from 'crypto'
 const createOrder = async (req, res) => {
     const paymentMethod = req.body.paymentMethod ?? req.body.payment;
     const { deliveryAddress, shopOrder } = req.body;
-
+console.log(shopOrder)
     if (!req.user) {
         return res.status(401).json({ message: "Authentication failed. Please log in again." });
     }

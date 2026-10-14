@@ -170,6 +170,7 @@ function Nav() {
     setQuery(selectedItem.name);
     setShowSearchResults(true);
     setSuggestion([]);
+    setMobileSearchOpen(false);
 
     try {
       const response = await axios.get(
@@ -1571,30 +1572,53 @@ function Nav() {
 
           <div className="md:hidden p-3 bg-white border-b">
 
-            <div className="flex items-center bg-gray-100 rounded-xl px-4 py-3">
+            <div className="relative">
+              <div className="flex items-center bg-gray-100 rounded-xl px-4 py-3">
 
-              <FiSearch
-                size={20}
-                className="text-gray-500"
-              />
+                <FiSearch
+                  size={20}
+                  className="text-gray-500"
+                />
 
-              <input
-                autoFocus
-                type="text"
-                placeholder="Search food or restaurants..."
-                className="w-full bg-transparent outline-none px-3"
-              />
+                <input
+                  autoFocus
+                  type="text"
+                  value={query}
+                  onChange={handleSearch}
+                  placeholder="Search food or restaurants..."
+                  className="w-full bg-transparent outline-none px-3"
+                />
 
-              <button
-                onClick={() =>
-                  setMobileSearchOpen(false)
-                }
-              >
+                <button
+                  onClick={() =>
+                    setMobileSearchOpen(false)
+                  }
+                >
 
-                <FiX size={20} />
+                  <FiX size={20} />
 
-              </button>
+                </button>
 
+              </div>
+
+              {suggestion.length > 0 && (
+                <div className="absolute left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-50 max-h-60 overflow-y-auto">
+                  {suggestion.map((item) => (
+                    <div
+                      onClick={() => {
+                        handleSuggestionClick(item)
+                      }}
+                      key={item._id}
+                      className="flex justify-between items-center px-4 py-3 hover:bg-gray-50 cursor-pointer border-b last:border-none border-gray-100"
+                    >
+                      <p className="font-medium text-gray-800">{item.name}</p>
+                      <span className="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded-full">
+                        {item.category}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
           </div>
