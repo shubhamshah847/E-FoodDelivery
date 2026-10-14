@@ -9,7 +9,7 @@ const RESEND_COOLDOWN_SECONDS = 10; // 10 seconds wait to resend
 const VerifyOtp = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const userId = location.state?.userId;
+  const userId = location.state?.userId || localStorage.getItem("pendingOtpUserId");
 
   const [otp, setOtp] = useState("");
   
@@ -111,6 +111,7 @@ const VerifyOtp = () => {
 
       setMessage(response.data.message);
       localStorage.removeItem("otpExpiresAt");
+      localStorage.removeItem("pendingOtpUserId");
 
       setTimeout(() => {
         navigate("/login/user");

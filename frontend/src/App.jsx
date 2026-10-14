@@ -56,6 +56,8 @@ function App() {
     const { userData } = useSelector((state) => state.user);
     const currentUser = userData?.user ?? userData ?? null;
     const isVerifiedUser = Boolean(currentUser?.isVerified);
+    const hasVerifiedUser = Boolean(currentUser && isVerifiedUser);
+    const verificationUserId = currentUser?._id || localStorage.getItem("pendingOtpUserId");
     useUserLocation();
 
     return (
@@ -67,9 +69,13 @@ function App() {
                 element={
                     isCheckingSession
                         ? <Splash />
-                        : !userData
-                            ? <Splash />
-                            : <Navigate to="/home" replace />
+                        : hasVerifiedUser
+                            ? <Navigate to="/home" replace />
+                            : verificationUserId
+                                ? <Navigate to="/register/verify-otp" state={{ userId: verificationUserId }} replace />
+                                : userData
+                                    ? <Navigate to="/login/user" replace />
+                                    : <Splash />
                 }
             />
 
@@ -77,9 +83,11 @@ function App() {
             <Route
                 path="/register/user"
                 element={
-                    !userData
-                        ? <Register />
-                        : <Navigate to="/home" replace />
+                    hasVerifiedUser
+                        ? <Navigate to="/home" replace />
+                        : verificationUserId
+                            ? <Navigate to="/register/verify-otp" state={{ userId: verificationUserId }} replace />
+                            : <Register />
                 }
             />
 
@@ -87,9 +95,11 @@ function App() {
             <Route
                 path="/login/user"
                 element={
-                    !userData
-                        ? <Login />
-                        : <Navigate to="/home" />
+                    hasVerifiedUser
+                        ? <Navigate to="/home" replace />
+                        : verificationUserId
+                            ? <Navigate to="/register/verify-otp" state={{ userId: verificationUserId }} replace />
+                            : <Login />
                 }
             />
 
@@ -97,35 +107,33 @@ function App() {
             <Route
                 path="/home"
                 element={
-                    currentUser && isVerifiedUser
+                    hasVerifiedUser
                         ? <Home />
-                        : <Navigate to="/register/user" replace />
+                        : verificationUserId
+                            ? <Navigate to="/register/verify-otp" state={{ userId: verificationUserId }} replace />
+                            : <Navigate to="/login/user" replace />
                 }
             />
 
             {/* Verify OTP */}
             <Route
                 path="/register/verify-otp"
-                element={
-                    currentUser && !isVerifiedUser
-                        ? <VerifyOtp />
-                        : <Navigate to="/login/user" replace />
-                }
+                element={<VerifyOtp />}
             />
 
            
             <Route
               path='/cart'
-              element={userData? <Cart/> : <Navigate to='/login/user'/>}
+              element={hasVerifiedUser? <Cart/> : <Navigate to='/login/user' replace/>}
             />
             <Route path='/get-my-orders'
-            element={userData? <GetMyOrders/> : <Navigate to='/login/user'/>}
+            element={hasVerifiedUser? <GetMyOrders/> : <Navigate to='/login/user' replace/>}
             />
               <Route path='/get-owner-orders'
-            element={userData? <GetOwnerOrder/> : <Navigate to='/login/user'/>}
+            element={hasVerifiedUser? <GetOwnerOrder/> : <Navigate to='/login/user' replace/>}
             />
             
-            <Route path="/item/checkout" element={userData? <CheckOut/> : <Navigate to='/login/user'/>}/>
+            <Route path="/item/checkout" element={hasVerifiedUser? <CheckOut/> : <Navigate to='/login/user' replace/>}/>
 
         </Routes>
     );

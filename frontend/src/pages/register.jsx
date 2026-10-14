@@ -70,6 +70,7 @@ const Register = () => {
       );
       setError("");
       setMessage(response.data.message || "Verification code sent to your email.");
+      localStorage.setItem("pendingOtpUserId", response.data.user._id);
 
       navigate("/register/verify-otp", {
         state: {
