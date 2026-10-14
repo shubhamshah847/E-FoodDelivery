@@ -1,18 +1,25 @@
 import orderModel from "../models/order.model.js";
 import shopModel from "../models/shop.model.js";
-import userModel from "../models/user.models.js"
 import itemModel from "../models/item.model.js";
 import crypto from 'crypto'
+
 const createOrder = async (req, res) => {
-  console.log("hello")
-    const {
-        payment,
-        deliveryAddress,
-        shopOrder
-    } = req.body;
-    if (!payment || !shopOrder || !deliveryAddress) {
+    const paymentMethod = req.body.paymentMethod ?? req.body.payment;
+    const { deliveryAddress, shopOrder } = req.body;
+
+    if (!req.user) {
+        return res.status(401).json({ message: "Authentication failed. Please log in again." });
+    }
+
+    if (!paymentMethod || !Array.isArray(shopOrder) || shopOrder.length === 0 || !deliveryAddress || !deliveryAddress.trim()) {
         return res.status(400).json({
-            message: "All fields are required"
+            message: "Payment, delivery address, and items are required"
+        });
+    }
+
+    if (!['cod', 'online'].includes(paymentMethod)) {
+        return res.status(400).json({
+            message: "Payment method must be either cod or online"
         });
     }
 
@@ -21,6 +28,11 @@ const createOrder = async (req, res) => {
         let totalAmount = 0;
 
         for (const shopData of shopOrder) {
+            if (!shopData || !shopData.shop || !Array.isArray(shopData.items) || shopData.items.length === 0) {
+                return res.status(400).json({
+                    message: "Each shop order must include a valid shop and items list"
+                });
+            }
 
             const shopId = await shopModel.findById(shopData.shop);
 
@@ -39,14 +51,18 @@ const createOrder = async (req, res) => {
             }
 
             const finalItemData = [];
+            let shopTotal = 0;
 
-            // shopData.items = array of items
             for (const itemData of shopData.items) {
+                if (!itemData || !itemData.item) {
+                    return res.status(400).json({
+                        message: "Each item must include an item ID"
+                    });
+                }
 
                 const itemId = itemData.item;
                 const quantity = itemData.quantity;
 
-                // validate quantity
                 if (
                     quantity === undefined ||
                     quantity === null ||
@@ -59,7 +75,6 @@ const createOrder = async (req, res) => {
                     });
                 }
 
-                // Find the actual food item
                 const item = await itemModel.findById(itemId);
                 if (!item) {
                     return res.status(404).json({
@@ -67,16 +82,14 @@ const createOrder = async (req, res) => {
                     });
                 }
 
-                // Check stock
                 if (quantity > item.quantity) {
                     return res.status(400).json({
                         message: `Only ${item.quantity} ${item.name} items are available`
                     });
                 }
 
-                // Calculate subtotal from DB price
                 const subTotal = item.price * quantity;
-
+                shopTotal += subTotal;
                 totalAmount += subTotal;
 
                 finalItemData.push({
@@ -86,26 +99,26 @@ const createOrder = async (req, res) => {
                     subTotal: subTotal
                 });
             }
+
             finalShopData.push({
                 shop: shopId._id,
                 owner: ownerId,
+                subTotal: shopTotal,
                 shopOrderItem: finalItemData
             });
         }
+
         const orderId = `YUM-${crypto.randomBytes(4).toString("hex").toUpperCase()}`;
         const order = await orderModel.create({
             user: req.user,
-            paymentMethod: payment,
-            deliveryAddress,
+            paymentMethod: paymentMethod,
+            deliveryAddress: deliveryAddress.trim(),
             totalAmount: totalAmount,
             shopOrder: finalShopData,
             orderId,
             status: "pending"
         });
-     await orderModel.findOneAndUpdate(
-    { orderId: order.orderId },
-    { status: "confirmed" }
-);
+
         return res.status(201).json({
             message: "Order created successfully",
             order
