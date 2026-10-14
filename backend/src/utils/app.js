@@ -16,7 +16,7 @@ app.get('/', (_req, res) => {
   res.status(200).json({ message: 'Food Delivery Tracking API is running' })
 })
 app.use(cors({
-  origin: "https://yumzo-frontend.onrender.com",
+  origin: "https://yumzo-food.vercel.app",
   credentials: true
 }));
 app.use(cookieParser())
