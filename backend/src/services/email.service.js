@@ -101,7 +101,7 @@ Nepal 🇳🇵
       return false;
     }
 
-    const { data, error } = await resend.emails.send({
+        const { data, error } = await resend.emails.send({
       from: fromAddress,
       to: userEmail,
       subject,
@@ -196,7 +196,7 @@ Nepal 🇳🇵
       return false;
     }
 
-    const { data, error } = await resend.emails.send({
+        const { data, error } = await resend.emails.send({
       from: fromAddress,
       to: userEmail,
       subject,

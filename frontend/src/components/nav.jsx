@@ -401,24 +401,21 @@ function Nav() {
         <div className="mx-auto flex h-full max-w-7xl items-center justify-between gap-4">
           {/* ================= LEFT ================= */}
 
-          <div className="flex items-center gap-5">
+          <div className="flex min-w-0 flex-1 items-center gap-5">
 
             {/* LOGO */}
 
-            <div className="flex items-center gap-3">
+            <div className="shrink-0">
 
               {isOwner ? (
 
                 <div>
 
-                  <div className="flex items-center gap-2">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-amber-400 text-lg font-black text-white shadow-lg shadow-orange-500/20">Y</div>
-                    <h1 className="text-2xl font-black tracking-[-0.06em] text-orange-600">
-                      Yumzo
-                    </h1>
-                  </div>
+                  <h1 className="text-xl font-bold text-orange-500 md:text-2xl">
+                    Yumzo
+                  </h1>
 
-                  <p className="text-[10px] font-bold tracking-[0.22em] text-slate-500">
+                  <p className="text-[10px] font-bold text-gray-500">
                     PARTNER
                   </p>
 
@@ -426,17 +423,50 @@ function Nav() {
 
               ) : (
 
-                <div className="flex items-center gap-2">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-amber-400 text-lg font-black text-white shadow-lg shadow-orange-500/20">Y</div>
-                  <h1 className="text-2xl font-black tracking-[-0.06em] text-orange-600">
-                    Yumzo
-                  </h1>
-                </div>
+                <h1 className="text-xl font-bold text-orange-500 md:text-2xl">
+                  Yumzo
+                </h1>
 
               )}
 
             </div>
 
+            {!isOwner && (
+              <div className="hidden flex-1 lg:flex">
+                <div className="relative w-full max-w-xl">
+                  <div className="flex items-center rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 transition focus-within:border-orange-300 focus-within:bg-white focus-within:ring-2 focus-within:ring-orange-100">
+                    <FiSearch size={18} className="text-gray-500" />
+                    <input
+                      type="text"
+                      value={query}
+                      onChange={handleSearch}
+                      placeholder="Search food or restaurants..."
+                      className="w-full bg-transparent px-3 text-sm outline-none"
+                    />
+                  </div>
+
+                  {showDesktopSuggestions && (
+                    <div className="absolute left-0 right-0 top-full z-50 mt-2 max-h-60 overflow-y-auto rounded-xl border border-gray-100 bg-white shadow-lg">
+                      {suggestion.map((item) => (
+                        <div onClick={() => {
+                          handleSuggestionClick(item)
+                        }}
+                          key={item._id}
+                          className="flex cursor-pointer items-center justify-between border-b border-gray-100 px-4 py-3 last:border-b-0 hover:bg-gray-50"
+                        >
+                          <p className="font-medium text-gray-800">{item.name}</p>
+                          <span className="rounded-full bg-gray-100 px-2 py-1 text-[10px] text-gray-500">
+                            {item.category}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+          </div>
 
           {/* ================= CREATE SHOP POPUP ================= */}
 
@@ -1285,52 +1315,12 @@ function Nav() {
 
           )}
 
-          </div>
-
 
           {/* ================= USER SEARCH ================= */}
 
-        {!isOwner && (
-
-          <div className="hidden md:flex flex-1 max-w-xl mx-8 relative">
-            {/* Search Input Bar */}
-            <div className="w-full flex items-center bg-gray-100 rounded-xl px-4 py-2.5">
-              <FiSearch size={20} className="text-gray-500" />
-              <input
-                type="text"
-                value={query}
-                onChange={handleSearch}
-                placeholder="Search food or restaurants..."
-                className="w-full bg-transparent outline-none px-3"
-              />
-            </div>
-
-            {/* Auto-complete Dropdown Menu */}
-            {showDesktopSuggestions && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-50 max-h-60 overflow-y-auto">
-                {suggestion.map((item) => (
-                  <div onClick={() => {
-                    handleSuggestionClick(item)
-                  }}
-                    key={item._id}
-                    className="flex justify-between items-center px-4 py-3 hover:bg-red-50 cursor-pointer border-b last:border-none border-gray-100"
-                  >
-                    <p className="font-medium text-gray-800">{item.name}</p>
-                    <span className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">
-                      {item.category}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-        )}
-
-
         {/* ================= RIGHT ================= */}
 
-        <div className="flex items-center gap-2 md:gap-4">
+        <div className="flex shrink-0 items-center gap-2 md:gap-3">
 
 
           {/* ================= NORMAL USER ================= */}
@@ -1582,13 +1572,13 @@ function Nav() {
 
         {!isOwner && mobileSearchOpen && (
 
-          <div className="md:hidden p-3 bg-white border-b">
+          <div className="border-t border-gray-100 bg-white p-3 lg:hidden">
 
             <div className="relative">
-              <div className="flex items-center bg-gray-100 rounded-xl px-4 py-3">
+              <div className="flex items-center rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5">
 
                 <FiSearch
-                  size={20}
+                  size={18}
                   className="text-gray-500"
                 />
 
@@ -1598,33 +1588,34 @@ function Nav() {
                   value={query}
                   onChange={handleSearch}
                   placeholder="Search food or restaurants..."
-                  className="w-full bg-transparent outline-none px-3"
+                  className="w-full bg-transparent px-3 text-sm outline-none"
                 />
 
                 <button
                   onClick={() =>
                     setMobileSearchOpen(false)
                   }
+                  className="rounded-full p-1 hover:bg-gray-200"
                 >
 
-                  <FiX size={20} />
+                  <FiX size={18} />
 
                 </button>
 
               </div>
 
               {showMobileSuggestions && (
-                <div className="absolute left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-50 max-h-60 overflow-y-auto">
+                <div className="absolute left-0 right-0 top-full z-50 mt-2 max-h-60 overflow-y-auto rounded-xl border border-gray-100 bg-white shadow-lg">
                   {suggestion.map((item) => (
                     <div
                       onClick={() => {
                         handleSuggestionClick(item)
                       }}
                       key={item._id}
-                      className="flex justify-between items-center px-4 py-3 hover:bg-red-50 cursor-pointer border-b last:border-none border-gray-100"
+                      className="flex cursor-pointer items-center justify-between border-b border-gray-100 px-4 py-3 last:border-b-0 hover:bg-gray-50"
                     >
                       <p className="font-medium text-gray-800">{item.name}</p>
-                      <span className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">
+                      <span className="rounded-full bg-gray-100 px-2 py-1 text-[10px] text-gray-500">
                         {item.category}
                       </span>
                     </div>
