@@ -5,8 +5,8 @@ import { Resend } from "resend";
 dotenv.config();
 
 const resendApiKey = process.env.RESENDEMAIL_API_KEY;
-const senderEmail = process.env.RESEND_SENDER_EMAIL || "onboarding@resend.dev";
-const fromAddress = process.env.RESEND_FROM || `Yumzo <${senderEmail}>`;
+const senderEmail =
+  process.env.RESEND_SENDER_EMAIL || "yumzo@shubhamsah.com.np";
 
 const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
@@ -101,8 +101,8 @@ Nepal 🇳🇵
       return false;
     }
 
-        const { data, error } = await resend.emails.send({
-      from: fromAddress,
+    const { data, error } = await resend.emails.send({
+      from: `Yumzo <${senderEmail}>`,
       to: userEmail,
       subject,
       text,
@@ -196,8 +196,8 @@ Nepal 🇳🇵
       return false;
     }
 
-        const { data, error } = await resend.emails.send({
-      from: fromAddress,
+    const { data, error } = await resend.emails.send({
+      from: `Yumzo <${senderEmail}>`,
       to: userEmail,
       subject,
       text,
