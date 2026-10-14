@@ -91,14 +91,14 @@ const Register = () => {
         
         {/* Header & Logo */}
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-orange-100 text-2xl mb-4 shadow-inner">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-red-100 text-2xl mb-4 shadow-inner">
             🍔
           </div>
           <h2 className="text-3xl font-extrabold tracking-tight text-slate-900">
             Create an account
           </h2>
           <p className="mt-2 text-sm text-slate-500">
-            Welcome to <span className="font-semibold text-orange-600">Yumzo</span>! Start ordering your favorite food.
+            Welcome to <span className="font-semibold text-red-600">Yumzo</span>! Start ordering your favorite food.
           </p>
         </div>
 
@@ -208,7 +208,7 @@ const Register = () => {
           <button
             type="submit"
             disabled={loadingRegister}
-            className="w-full group relative flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-xl text-sm font-semibold text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all shadow-md shadow-orange-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full group relative flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-xl text-sm font-semibold text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all shadow-md shadow-red-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span>
               {loadingRegister ? "Creating account..." : "Create Account"}

@@ -94,6 +94,9 @@ function Nav() {
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchResult,setShowSearchResults]=useState(false)
 
+  const showDesktopSuggestions = !isOwner && query.trim() && suggestion.length > 0 && !mobileSearchOpen;
+  const showMobileSuggestions = !isOwner && mobileSearchOpen && query.trim() && suggestion.length > 0;
+
   useEffect(() => {
     if (isOwner && shopData) {
       getMyItems();
@@ -1303,17 +1306,17 @@ function Nav() {
             </div>
 
             {/* Auto-complete Dropdown Menu */}
-            {suggestion.length > 0 && (
+            {showDesktopSuggestions && (
               <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-50 max-h-60 overflow-y-auto">
                 {suggestion.map((item) => (
                   <div onClick={() => {
                     handleSuggestionClick(item)
                   }}
                     key={item._id}
-                    className="flex justify-between items-center px-4 py-3 hover:bg-gray-50 cursor-pointer border-b last:border-none border-gray-100"
+                    className="flex justify-between items-center px-4 py-3 hover:bg-red-50 cursor-pointer border-b last:border-none border-gray-100"
                   >
                     <p className="font-medium text-gray-800">{item.name}</p>
-                    <span className="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded-full">
+                    <span className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">
                       {item.category}
                     </span>
                   </div>
@@ -1610,7 +1613,7 @@ function Nav() {
 
               </div>
 
-              {suggestion.length > 0 && (
+              {showMobileSuggestions && (
                 <div className="absolute left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-50 max-h-60 overflow-y-auto">
                   {suggestion.map((item) => (
                     <div
@@ -1618,10 +1621,10 @@ function Nav() {
                         handleSuggestionClick(item)
                       }}
                       key={item._id}
-                      className="flex justify-between items-center px-4 py-3 hover:bg-gray-50 cursor-pointer border-b last:border-none border-gray-100"
+                      className="flex justify-between items-center px-4 py-3 hover:bg-red-50 cursor-pointer border-b last:border-none border-gray-100"
                     >
                       <p className="font-medium text-gray-800">{item.name}</p>
-                      <span className="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded-full">
+                      <span className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">
                         {item.category}
                       </span>
                     </div>

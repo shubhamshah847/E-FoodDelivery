@@ -73,14 +73,14 @@ const Login = () => {
 
         {/* Header & Logo */}
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-orange-100 text-2xl mb-4 shadow-inner">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-red-100 text-2xl mb-4 shadow-inner">
             🍴
           </div>
           <h2 className="text-3xl font-extrabold tracking-tight text-slate-900">
             Welcome back
           </h2>
           <p className="mt-2 text-sm text-slate-500">
-            Login to continue ordering from <span className="font-semibold text-orange-600">Yumzo</span>
+            Login to continue ordering from <span className="font-semibold text-red-600">Yumzo</span>
           </p>
         </div>
 
@@ -109,7 +109,7 @@ const Login = () => {
               </label>
               <button
                 type="button"
-                className="text-xs font-semibold text-orange-600 hover:text-orange-500 transition-colors"
+                className="text-xs font-semibold text-red-600 hover:text-red-500 transition-colors"
               >
                 Forgot Password?
               </button>
@@ -135,7 +135,7 @@ const Login = () => {
           <button
             type="submit"
             disabled={Loginloading}
-            className="w-full group relative flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-xl text-sm font-semibold text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all shadow-md shadow-orange-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full group relative flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-xl text-sm font-semibold text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all shadow-md shadow-red-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span>{Loginloading ? "Waiting for response..." : "Login"}</span>
             <span className="group-hover:translate-x-0.5 transition-transform">
@@ -151,7 +151,7 @@ const Login = () => {
             <button
               type="button"
               onClick={() => navigate("/register/user")}
-              className="font-semibold text-orange-600 hover:text-orange-500 transition-colors underline-offset-2 hover:underline"
+              className="font-semibold text-red-600 hover:text-red-500 transition-colors underline-offset-2 hover:underline"
             >
               Sign Up
             </button>

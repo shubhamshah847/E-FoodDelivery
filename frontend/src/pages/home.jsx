@@ -13,22 +13,22 @@ function Home() {
       <Nav />
 
       <main className="mx-auto w-full max-w-7xl px-4 pb-12 pt-24 sm:px-6 lg:px-8">
-        <section className="relative overflow-hidden rounded-[28px] border border-orange-100 bg-gradient-to-br from-orange-500 via-orange-600 to-amber-500 p-6 shadow-[0_25px_60px_rgba(249,115,22,0.22)] sm:p-8 lg:p-10">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.25),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(255,240,210,0.26),transparent_25%)]" />
+        <section className="relative overflow-hidden rounded-[28px] border border-red-100 bg-gradient-to-br from-red-500 via-red-600 to-rose-500 p-6 shadow-[0_25px_60px_rgba(220,38,38,0.22)] sm:p-8 lg:p-10">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.24),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(255,228,230,0.22),transparent_25%)]" />
           <div className="relative grid items-center gap-8 lg:grid-cols-[1.3fr_0.7fr]">
             <div>
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-orange-50 backdrop-blur-sm">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-red-50 backdrop-blur-sm">
                 <FiTrendingUp size={12} /> Fresh cravings, faster
               </div>
               <h1 className="max-w-xl text-4xl font-black tracking-[-0.06em] text-white sm:text-5xl lg:text-6xl">
                 Feast on the good stuff.
               </h1>
-              <p className="mt-4 max-w-lg text-sm leading-7 text-orange-50/90 sm:text-base">
+              <p className="mt-4 max-w-lg text-sm leading-7 text-red-50/90 sm:text-base">
                 Discover chef-loved bites, comfort classics, and late-night favorites delivered to your doorstep with a premium food experience.
               </p>
 
               <div className="mt-6 flex flex-wrap gap-3">
-                <button className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-orange-600 shadow-lg shadow-orange-900/10 transition hover:scale-[1.02]">
+                <button className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-red-600 shadow-lg shadow-red-900/10 transition hover:scale-[1.02]">
                   Explore menu
                 </button>
                 <button className="rounded-full border border-white/35 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/15">
@@ -45,7 +45,7 @@ function Home() {
                       <p className="text-xs uppercase tracking-[0.18em] text-orange-500">Today</p>
                       <h3 className="mt-1 text-xl font-bold">Chef special</h3>
                     </div>
-                    <div className="rounded-full bg-orange-100 p-2 text-orange-500">
+                    <div className="rounded-full bg-red-100 p-2 text-red-500">
                       <FiStar size={18} />
                     </div>
                   </div>
@@ -76,7 +76,7 @@ function Home() {
             { label: 'Top rated', value: '4.8/5 foodies', icon: FiStar }
           ].map(({ label, value, icon: Icon }) => (
             <div key={label} className="rounded-2xl border border-orange-100 bg-white/80 p-4 shadow-sm backdrop-blur-sm transition hover:-translate-y-0.5 hover:shadow-md">
-              <div className="mb-3 inline-flex rounded-xl bg-orange-100 p-2 text-orange-600">
+              <div className="mb-3 inline-flex rounded-xl bg-red-100 p-2 text-red-600">
                 <Icon size={18} />
               </div>
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{label}</p>
@@ -88,7 +88,7 @@ function Home() {
         <section className="mt-10">
           <div className="mb-5 flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-orange-500">Curated for you</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-500">Curated for you</p>
               <h2 className="mt-1 text-2xl font-black tracking-[-0.04em] text-slate-900">Popular picks</h2>
             </div>
             <button className="hidden rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm font-semibold text-slate-700 shadow-sm sm:block">View all</button>

@@ -79,7 +79,7 @@ function FoodCard({ item }) {
           <h3 className="truncate text-sm font-bold text-slate-900 sm:text-base">
             {item.name}
           </h3>
-          <span className="rounded-full bg-orange-50 px-2 py-1 text-[10px] font-semibold text-orange-600">
+          <span className="rounded-full bg-red-50 px-2 py-1 text-[10px] font-semibold text-red-600">
             {item.category}
           </span>
         </div>
@@ -110,16 +110,16 @@ function FoodCard({ item }) {
             <button
               type="button"
               onClick={() => dispatch(setAddToCart(item))}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/25 transition hover:scale-105 active:scale-90"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-red-600 text-white shadow-lg shadow-red-500/25 transition hover:scale-105 active:scale-90"
             >
               <FiPlus size={20} />
             </button>
           ) : (
-            <div className="flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-1 py-1 shadow-sm">
+            <div className="flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-1 py-1 shadow-sm">
               <button
                 type="button"
                 onClick={decreaseQuantity}
-                className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-orange-600 transition hover:bg-orange-100 active:scale-90"
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-red-600 transition hover:bg-red-100 active:scale-90"
               >
                 <FiMinus size={15} />
               </button>
@@ -130,7 +130,7 @@ function FoodCard({ item }) {
 
               <button
                 type="button"
-                className="flex h-7 w-7 items-center justify-center rounded-full bg-orange-500 text-white transition hover:bg-orange-600 active:scale-90"
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-red-500 text-white transition hover:bg-red-600 active:scale-90"
               >
                 <FiPlus size={15} />
               </button>
