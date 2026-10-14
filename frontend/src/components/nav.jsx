@@ -470,8 +470,6 @@ function Nav() {
 
           {/* ================= CREATE SHOP POPUP ================= */}
 
-          </div>
-
           {showCreateShop && (
 
             <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 px-4">
@@ -1563,8 +1561,9 @@ function Nav() {
 
         </div>
 
+        </div>
       </nav>
-      <main className="pt-16">
+      <main className="pt-20">
 
 
 
