@@ -176,7 +176,23 @@ export const otpVerify = async (req, res) => {
 
         await otpModel.deleteOne({ _id: storedOtp._id })
         await regrestationEmail(userUpdate_verified.email, userUpdate_verified.name)
-        return res.status(200).json({ message: "otp verified" })
+
+        const token = jwt.sign({
+            id: userUpdate_verified._id
+        }, process.env.JWT_WEB_TOKEN, {
+            expiresIn: '15d'
+        })
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+            maxAge: 15 * 24 * 60 * 60 * 1000
+        })
+
+        return res.status(200).json({
+            message: "otp verified",
+            user: { ...userUpdate_verified.toObject(), password: undefined }
+        })
 
     }
     catch (err) {
@@ -261,8 +277,8 @@ export const registerGoogleController = async (req, res) => {
         })
         res.cookie('token', token, {
             httpOnly: true,
-            secure: false,
-            sameSite: 'lax',
+            secure: true,
+            sameSite: 'none',
             maxAge: 15 * 24 * 60 * 60 * 1000
         })
         try{
@@ -274,7 +290,7 @@ export const registerGoogleController = async (req, res) => {
         }
         res.status(200).json({
             message: "user created successfully",
-            user: user
+            user: { ...updated_user.toObject(), password: undefined }
         })
 
     }
@@ -306,7 +322,11 @@ export const getCurrentUser = async (req, res) => {
 }
 export const userLogout = async (req,res)=>{
     try{
-   await res.clearCookie('token')
+   res.clearCookie('token', {
+       httpOnly: true,
+       secure: true,
+       sameSite: 'none'
+   })
    res.status(200).json({
     message:"logout successfully"
    })

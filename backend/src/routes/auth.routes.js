@@ -17,6 +17,6 @@ router.post('/verify-otp',otpVerify)
 router.post('/generate-new-otp',rateLimiter,otpNewGenerate)
 router.post('/user/google/register',rateLimiter,registerGoogleController)
 router.get('/get-current-user',isAuth,getCurrentUser)
-router.get('/logout',isAuth,userLogout)
+router.get('/logout',userLogout)
 
 export default router ;

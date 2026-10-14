@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { serverURI } from "../App";
+import { setuserData } from "../redux/userSlice";
 
 const OTP_EXPIRY_SECONDS = 300; // 5 minutes validity
 const RESEND_COOLDOWN_SECONDS = 10; // 10 seconds wait to resend
@@ -9,6 +11,7 @@ const RESEND_COOLDOWN_SECONDS = 10; // 10 seconds wait to resend
 const VerifyOtp = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
   const userId = location.state?.userId || localStorage.getItem("pendingOtpUserId");
 
   const [otp, setOtp] = useState("");
@@ -110,12 +113,11 @@ const VerifyOtp = () => {
       );
 
       setMessage(response.data.message);
+      dispatch(setuserData(response.data));
       localStorage.removeItem("otpExpiresAt");
       localStorage.removeItem("pendingOtpUserId");
 
-      setTimeout(() => {
-        navigate("/login/user");
-      }, 900);
+      navigate("/home", { replace: true });
     } catch (err) {
       setError(err.response?.data?.message || "OTP verification failed");
     } finally {

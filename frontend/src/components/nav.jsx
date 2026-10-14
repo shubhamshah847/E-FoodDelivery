@@ -112,19 +112,16 @@ function Nav() {
           withCredentials: true,
         }
       );
-      dispatch(setuserData(null));
-
-      setProfileOpen(false);
-
     } catch (error) {
-
-      console.error(
-        "Logout error:",
-        error
-      );
-
+      console.error("Logout request failed; clearing the local session:", error);
+    } finally {
+      dispatch(setuserData(null));
+      dispatch(setShopData(null));
+      localStorage.removeItem("pendingOtpUserId");
+      localStorage.removeItem("otpExpiresAt");
+      setProfileOpen(false);
+      navigate("/login/user", { replace: true });
     }
-
   };
   const handleImage = (file) => {
     if (!file) return;
