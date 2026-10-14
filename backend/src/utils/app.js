@@ -12,6 +12,9 @@ import paymentRoutes from '../../payment/razroPay/payment.routes.js'
 
 const app = express()
 connectToDb()
+app.get('/', (_req, res) => {
+  res.status(200).json({ message: 'Food Delivery Tracking API is running' })
+})
 app.use(cors({
   origin: "https://yumzo-frontend.onrender.com",
   credentials: true

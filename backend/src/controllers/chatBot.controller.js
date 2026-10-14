@@ -49,7 +49,8 @@ Rules:
 
 const chatBotController = async (req, res) => {
     const { message } = req.body;
-
+  const name="  shubham  "
+  message.trim()
     if (typeof message !== "string" || !message.trim()) {
         return res.status(400).json({ error: "Message is required" });
     }

@@ -5,7 +5,9 @@ import { Resend } from "resend";
 dotenv.config();
 
 const resend = new Resend(process.env.RESENDEMAIL_API_KEY);
-
+if(resend){
+  console.log("connected to email")
+}
 // Registration successful email
 export async function regrestationEmail(userEmail, name) {
   const subject =
